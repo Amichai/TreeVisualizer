@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<Data>
+<Node Type="+" Value="+" MaxChildren="2">
+  <Node Type="/" Value="/" MaxChildren="2">
+    <Node Type="Number" Value="3" />
+    <Node Type="Number" Value="4" />
+  </Node>
+  <Node Type="Number" Value="8" />
+</Node>
+
+<Visualizations>
+  <Visualization Type="Number" AsString="node => node.Value.ToString()" ToUIElement="node => new TextBlock() { Text = node.AsString, HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
+VerticalAlignment = System.Windows.VerticalAlignment.Center  };">
+  </Visualization>
+
+  <Visualization Type="/" AsString="node => node.Value.ToString()" ToUIElement="node => {
+
+                StackPanel sp = new StackPanel() { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+                sp.Orientation = Orientation.Vertical;
+                sp.Children.Add(node.Children[1].ToUIElement());
+                sp.Children.Add(new Separator());
+                sp.Children.Add(node.Children[0].ToUIElement());
+
+                return sp;
+                };
+">
+  </Visualization>
+
+  <Visualization Type="+" AsString="node => node.Value.ToString()" ToUIElement="node => {
+                StackPanel sp = new StackPanel() { HorizontalAlignment = HorizontalAlignment.Center, 
+VerticalAlignment = VerticalAlignment.Center };
+                sp.Orientation = Orientation.Horizontal;
+                sp.Children.Add(node.Children[1].ToUIElement());
+                sp.Children.Add(new TextBlock() { Text = &quot; + &quot;, VerticalAlignment = System.Windows.VerticalAlignment.Center } );
+                sp.Children.Add(node.Children[0].ToUIElement());
+
+                return sp;
+                };
+
+">
+  </Visualization>
+
+</Visualizations>
+</Data>

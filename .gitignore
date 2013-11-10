@@ -1,0 +1,6 @@
+ExecutionEngine/bin
+ExecutionEngine/obj/
+TreeLib/bin/
+TreeLib/obj
+TreeViz/bin
+TreeViz/obj/
