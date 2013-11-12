@@ -8,7 +8,7 @@ using System.Xml.Linq;
 
 namespace TreeLib {
     public class TypeSettings {
-        private static XElement xml = XElement.Load(@"..\..\DataSet.xml");
+        private static XElement xml = XElement.Load(@"..\..\DataSet2.xml");
 
         public TypeSettings(string type) {
             this.TypeName = type;
@@ -19,5 +19,13 @@ namespace TreeLib {
         public string TypeName { get; set; }
         public string ToStringFunction { get; set; }
         public string ToUIElement { get; set; }
+
+        public XElement ToXml() {
+            var vis = new XElement("Visualization");
+            vis.Add(new XAttribute("Type", this.TypeName));
+            vis.Add(new XAttribute("AsString", this.ToStringFunction));
+            vis.Add(new XAttribute("ToUIElement", this.ToUIElement));
+            return vis;
+        }
     }
 }

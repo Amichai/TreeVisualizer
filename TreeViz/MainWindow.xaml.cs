@@ -25,7 +25,7 @@ namespace TreeViz {
         public MainWindow() {
             InitializeComponent();
             this.DataContext = this;
-            var xml = XElement.Load(@"..\..\DataSet.xml");
+            var xml = XElement.Load(this.DataSource);
             this.Root = Node.FromXml(xml.Element("Node"));
             this.tree.ItemsSource = new List<Node>() { this.Root };
             this.VisualizationRoot.Children.Add(this.Root.ToUIElement());
@@ -57,10 +57,41 @@ namespace TreeViz {
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e) {
+            var xml = XElement.Load(this.DataSource);
+            this.Root = Node.FromXml(xml.Element("Node"));
             this.tree.ItemsSource = null;
             this.tree.ItemsSource = new List<Node>() { this.Root }; ;
             this.VisualizationRoot.Children.Clear();
             this.VisualizationRoot.Children.Add(this.Root.ToUIElement());
+        }
+
+        private string _DataSource = @"..\..\DataSet2.xml";
+        public string DataSource {
+            get { return _DataSource; }
+            set {
+                if (_DataSource != value) {
+                    _DataSource = value;
+                    OnPropertyChanged("DataSource");
+                }
+            }
+        }
+
+        private void Window_Closing_1(object sender, CancelEventArgs e) {
+        }
+
+        private void saveVisualizations() {
+            var xml = new XElement("Data");
+            xml.Add(this.Root.ToXml());
+            var visualizations = new XElement("Visualizations");
+            foreach (var vis in NodeFunctions.KnownTypes.Values) {
+                visualizations.Add(vis.ToXml());
+            }
+            xml.Add(visualizations);
+            xml.Save(this.DataSource);
+        }
+
+        private void Save_Click_2(object sender, RoutedEventArgs e) {
+            saveVisualizations();
         }
     }
 }
