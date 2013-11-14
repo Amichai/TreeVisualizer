@@ -52,7 +52,7 @@ namespace ExecutionEngine {
             //engine.AddReference(new MetadataFileReference(@"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.dll"));
             //engine.AddReference(new MetadataFileReference(@"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Xml.dll"));
             //engine.AddReference(new MetadataFileReference(@"C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5\System.Xaml.dll"));
-            var path = @"C:\Users\Amichai\Documents\visual studio 2012\Projects\TreeViz\TreeLib\bin\Debug\TreeLib.dll";
+            var path = System.IO.Path.GetFullPath(@"..\..\..\TreeLib\bin\debug\TreeLib.dll");
             
             engine.AddReference(new MetadataFileReference(path));
             engine.ImportNamespace("System");

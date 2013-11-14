@@ -19,7 +19,6 @@ namespace TreeLib {
         public string TypeName { get; set; }
         public string ToStringFunction { get; set; }
         public string ToUIElement { get; set; }
-
         public XElement ToXml() {
             var vis = new XElement("Visualization");
             vis.Add(new XAttribute("Type", this.TypeName));
