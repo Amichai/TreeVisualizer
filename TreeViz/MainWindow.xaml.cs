@@ -28,7 +28,27 @@ namespace TreeViz {
             var xml = XElement.Load(this.DataSource);
             this.Root = Node.FromXml(xml.Element("Node"));
             this.tree.ItemsSource = new List<Node>() { this.Root };
+
+            var visualizations = xml.Element("Visualizations");
+            foreach (var vis in visualizations.Elements("Visualization")) {
+                NodeFunctions.KnownTypes.Add(vis.Attribute("Type").Value, TypeSettings.FromXml(vis));
+            }
+
+            var controls = xml.Element("XamlControls");
+            if (controls != null) {
+                foreach (var con in controls.Elements("XamlControl")) {
+                    NodeFunctions.AddXamlControl(XamlControl.FromXml(con));
+                }
+            }
+
             this.VisualizationRoot.Children.Add(this.Root.ToUIElement());
+
+        }
+
+        public List<XamlControl> XamlControls {
+            get {
+                return NodeFunctions.XamlControls;
+            }
         }
 
         public List<TypeSettings> KnownTypes {
@@ -56,11 +76,15 @@ namespace TreeViz {
             }
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e) {
+        private void Refresh_Click_1(object sender, RoutedEventArgs e) {
             var xml = XElement.Load(this.DataSource);
             this.Root = Node.FromXml(xml.Element("Node"));
             this.tree.ItemsSource = null;
-            this.tree.ItemsSource = new List<Node>() { this.Root }; ;
+            this.tree.ItemsSource = new List<Node>() { this.Root };
+
+            foreach (var c in NodeFunctions.XamlControls.Where(i => !i.Valid)) {
+                NodeFunctions.Execute(c);
+            }
             this.VisualizationRoot.Children.Clear();
             this.VisualizationRoot.Children.Add(this.Root.ToUIElement());
         }
@@ -87,11 +111,28 @@ namespace TreeViz {
                 visualizations.Add(vis.ToXml());
             }
             xml.Add(visualizations);
+            var controls = new XElement("XamlControls");
+            foreach (var con in NodeFunctions.XamlControls) {
+                controls.Add(con.ToXml());
+            }
+            xml.Add(controls);
             xml.Save(this.DataSource);
         }
 
         private void Save_Click_2(object sender, RoutedEventArgs e) {
             saveVisualizations();
+        }
+
+        private void Compile_Click_2(object sender, RoutedEventArgs e) {
+            ///TODO keep track if the xaml control is valid//dirty and 
+            ///recompile automatically on update (when necessary);
+            var c = ((sender as Button).Tag as XamlControl);
+            NodeFunctions.Execute(c);
+        }
+
+        private void XamlControl_TextChanged_1(object sender, TextChangedEventArgs e) {
+            var c = (sender as TextBox).Tag as XamlControl;
+            c.Valid = false;
         }
     }
 }

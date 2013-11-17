@@ -11,14 +11,14 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <StackPanel >
-            <Button Click="Button_Click_1">Refresh</Button>
+            <Button Click="Refresh_Click_1">Refresh</Button>
             <TreeView Name="tree">
-            <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                    <TextBlock Text="{Binding AsString, Mode=OneWay}"></TextBlock>
-                </HierarchicalDataTemplate>
-            </TreeView.ItemTemplate>
-        </TreeView>
+                <TreeView.ItemTemplate>
+                    <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                        <TextBlock Text="{Binding AsString, Mode=OneWay}"></TextBlock>
+                    </HierarchicalDataTemplate>
+                </TreeView.ItemTemplate>
+            </TreeView>
             <Grid Name="VisualizationRoot">
             </Grid>
         </StackPanel>
@@ -26,35 +26,59 @@
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="*" />
+                <!--<RowDefinition Height="100" />-->
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-                <TextBox Grid.Column="0" Text="{Binding DataSource}"/>
-                <Button Width="100" HorizontalAlignment="Left" Click="Save_Click_2" Grid.Column="1">Save</Button>
-            <ScrollViewer Grid.Row="1" Grid.ColumnSpan="2">
-            <ItemsControl Name="allTypes" ItemsSource="{Binding KnownTypes}">
-            
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Grid Margin="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="50" />
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{Binding TypeName}"/>
-                            <StackPanel Grid.Column="1">
-                                <TextBox Text="{Binding ToStringFunction}" AcceptsReturn="True" TextWrapping="Wrap"/>
-                                    <local:MvvmTextEditor Text="{Binding ToUIElement}" WordWrap="True" >
-                                        
-                                    </local:MvvmTextEditor>
+            <TextBox Grid.Column="0" Text="{Binding DataSource}"/>
+            <Button Width="100" HorizontalAlignment="Left" Click="Save_Click_2" Grid.Column="1">Save</Button>
+            <TextBlock Grid.Row="1" Grid.ColumnSpan="2" FontWeight="Bold">Node Visualization:</TextBlock>
+            <ScrollViewer Grid.Row="2" Grid.ColumnSpan="2" >
+                <ItemsControl Name="allTypes" ItemsSource="{Binding KnownTypes}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding TypeName}"/>
+                                <StackPanel Grid.Column="1">
+                                    <TextBox Text="{Binding ToStringFunction}" AcceptsReturn="True" TextWrapping="Wrap"/>
+                                    <!--<local:MvvmTextEditor Text="{Binding ToUIElement}" WordWrap="True" ShowLineNumbers="True" ScrollViewer.VerticalScrollBarVisibility="Auto" />-->
+                                    <TextBox Text="{Binding ToUIElement}" TextWrapping="Wrap" AcceptsReturn="True" />
                                 </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+            <GridSplitter VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.ColumnSpan="2" Grid.Row="3"/>
+            <!--<TextBlock Grid.Row="4" Grid.ColumnSpan="2" FontWeight="Bold">Controls:</TextBlock>-->
+            <ScrollViewer Grid.Row="4" Grid.ColumnSpan="2">
+                <ItemsControl Name="controls" ItemsSource="{Binding XamlControls}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Margin="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="50" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Height="Auto" Grid.Column="0" Text="{Binding Name}" Tag="{Binding}" TextChanged="XamlControl_TextChanged_1"/>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Top">
+                                    <TextBox TextChanged="XamlControl_TextChanged_1" Tag="{Binding}"
+                                        Text="{Binding Val}" AcceptsReturn="True" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
             </ScrollViewer>
         </Grid>
     </Grid>

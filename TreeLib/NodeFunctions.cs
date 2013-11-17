@@ -9,8 +9,20 @@ using System.Windows.Controls;
 namespace TreeLib {
     public static class NodeFunctions {
         public static Dictionary<string, TypeSettings> KnownTypes = new Dictionary<string, TypeSettings>();
+        public static List<XamlControl> XamlControls = new List<XamlControl>();
 
         private static ExecutionEngine.ExecutionEngine engine = new ExecutionEngine.ExecutionEngine();
+
+        public static void AddXamlControl(XamlControl control) {
+            Execute(control);
+            XamlControls.Add(control);
+        }
+
+        public static void Execute(XamlControl control) {
+            var toExecute = control.ToExecute();
+            engine.Execute(toExecute);
+            control.Valid = true;
+        }
 
         public static string NodeToString(this Node node, int depth) {
             var type = node.Type;

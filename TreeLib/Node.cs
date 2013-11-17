@@ -19,10 +19,11 @@ namespace TreeLib
             this.Value = value;
             this.MinChildren = 0;
             this.MaxChildren = int.MaxValue;
-            if (!NodeFunctions.KnownTypes.Values.Select(i => i.TypeName).Contains(type)) {
-                NodeFunctions.KnownTypes.Add(type,
-                    new TypeSettings(type));
-            }
+            //if (!NodeFunctions.KnownTypes.Values.Select(i => i.TypeName).Contains(type)) {
+                
+            //    NodeFunctions.KnownTypes.Add(type,
+            //        new TypeSettings(type));
+            //}
         }
 
         public string AsString {
