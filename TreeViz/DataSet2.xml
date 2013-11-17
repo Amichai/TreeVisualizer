@@ -35,4 +35,7 @@
     <XamlControl Name="stack" Val="&lt;StackPanel xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot; &#xD;&#xA;HorizontalAlignment=&quot;Center&quot;&#xD;&#xA;VerticalAlignment=&quot;Center&quot;&#xD;&#xA;Margin=&quot;0,20,0,0&quot;&#xD;&#xA;Orientation=&quot;Horizontal&quot; /&gt;" />
     <XamlControl Name="op" Val="&lt;TextBlock xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot; &#xD;&#xA;HorizontalAlignment=&quot;Center&quot;&#xD;&#xA;VerticalAlignment=&quot;Center&quot;&#xD;&#xA;Margin=&quot;0,-20,0,0&quot;&#xD;&#xA;Text=&quot;test&quot; /&gt;" />
   </XamlControls>
+  <Functions>
+    <Function Val="string Testing() { return &quot;testing2&quot;; }" />
+  </Functions>
 </Data>

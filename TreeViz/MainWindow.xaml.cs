@@ -29,20 +29,15 @@ namespace TreeViz {
             this.Root = Node.FromXml(xml.Element("Node"));
             this.tree.ItemsSource = new List<Node>() { this.Root };
 
-            var visualizations = xml.Element("Visualizations");
-            foreach (var vis in visualizations.Elements("Visualization")) {
-                NodeFunctions.KnownTypes.Add(vis.Attribute("Type").Value, TypeSettings.FromXml(vis));
-            }
-
-            var controls = xml.Element("XamlControls");
-            if (controls != null) {
-                foreach (var con in controls.Elements("XamlControl")) {
-                    NodeFunctions.AddXamlControl(XamlControl.FromXml(con));
-                }
-            }
-
+            NodeFunctions.LoadLibraries(xml);
             this.VisualizationRoot.Children.Add(this.Root.ToUIElement());
 
+        }
+
+        public List<Function> Functions {
+            get {
+                return NodeFunctions.Functions;
+            }
         }
 
         public List<XamlControl> XamlControls {
@@ -77,14 +72,13 @@ namespace TreeViz {
         }
 
         private void Refresh_Click_1(object sender, RoutedEventArgs e) {
+            ///TODO: check if the datasource has changed since we last loaded one...
             var xml = XElement.Load(this.DataSource);
             this.Root = Node.FromXml(xml.Element("Node"));
             this.tree.ItemsSource = null;
             this.tree.ItemsSource = new List<Node>() { this.Root };
+            NodeFunctions.RefreshLibraries();
 
-            foreach (var c in NodeFunctions.XamlControls.Where(i => !i.Valid)) {
-                NodeFunctions.Execute(c);
-            }
             this.VisualizationRoot.Children.Clear();
             this.VisualizationRoot.Children.Add(this.Root.ToUIElement());
         }
@@ -116,6 +110,12 @@ namespace TreeViz {
                 controls.Add(con.ToXml());
             }
             xml.Add(controls);
+
+            var functions = new XElement("Functions");
+            foreach (var f in NodeFunctions.Functions) {
+                functions.Add(f.ToXml());
+            }
+            xml.Add(functions);
             xml.Save(this.DataSource);
         }
 
@@ -123,15 +123,13 @@ namespace TreeViz {
             saveVisualizations();
         }
 
-        private void Compile_Click_2(object sender, RoutedEventArgs e) {
-            ///TODO keep track if the xaml control is valid//dirty and 
-            ///recompile automatically on update (when necessary);
-            var c = ((sender as Button).Tag as XamlControl);
-            NodeFunctions.Execute(c);
-        }
-
         private void XamlControl_TextChanged_1(object sender, TextChangedEventArgs e) {
             var c = (sender as TextBox).Tag as XamlControl;
+            c.Valid = false;
+        }
+
+        private void Function_TextChanged_1(object sender, TextChangedEventArgs e) {
+            var c = (sender as TextBox).Tag as Function;
             c.Valid = false;
         }
     }

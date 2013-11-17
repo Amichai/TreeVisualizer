@@ -61,25 +61,44 @@
             </ScrollViewer>
             <GridSplitter VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Grid.ColumnSpan="2" Grid.Row="3"/>
             <!--<TextBlock Grid.Row="4" Grid.ColumnSpan="2" FontWeight="Bold">Controls:</TextBlock>-->
-            <ScrollViewer Grid.Row="4" Grid.ColumnSpan="2">
-                <ItemsControl Name="controls" ItemsSource="{Binding XamlControls}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="50" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <TextBox Height="Auto" Grid.Column="0" Text="{Binding Name}" Tag="{Binding}" TextChanged="XamlControl_TextChanged_1"/>
-                                <StackPanel Grid.Column="1" VerticalAlignment="Top">
-                                    <TextBox TextChanged="XamlControl_TextChanged_1" Tag="{Binding}"
+            <TabControl Grid.Row="4" Grid.ColumnSpan="2">
+                <TabItem Header="Functions">
+                    <ScrollViewer >
+                        <ItemsControl ItemsSource="{Binding Functions}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBox AcceptsReturn="True" 
+                                             Tag="{Binding}"
+                                             TextChanged="Function_TextChanged_1"
+                                             Text="{Binding Val}"
+                                             TextWrapping="Wrap"></TextBox>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </TabItem>
+                <TabItem Header="XAML">
+                    <ScrollViewer >
+                        <ItemsControl Name="controls" ItemsSource="{Binding XamlControls}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <TextBox Height="Auto" Grid.Column="0" Text="{Binding Name}" Tag="{Binding}" TextChanged="XamlControl_TextChanged_1"/>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Top">
+                                            <TextBox TextChanged="XamlControl_TextChanged_1" Tag="{Binding}"
                                         Text="{Binding Val}" AcceptsReturn="True" TextWrapping="Wrap"/>
-                                </StackPanel>
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </ScrollViewer>
+                                        </StackPanel>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
         </Grid>
     </Grid>
 </Window>
