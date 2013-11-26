@@ -63,19 +63,29 @@
             <!--<TextBlock Grid.Row="4" Grid.ColumnSpan="2" FontWeight="Bold">Controls:</TextBlock>-->
             <TabControl Grid.Row="4" Grid.ColumnSpan="2">
                 <TabItem Header="Functions">
-                    <ScrollViewer >
-                        <ItemsControl ItemsSource="{Binding Functions}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <TextBox AcceptsReturn="True" 
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <ScrollViewer Grid.Row="0">
+                            <ItemsControl Grid.Row="0" Name="functionLib"
+                                          ItemsSource="{Binding Functions}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBox AcceptsReturn="True" 
                                              Tag="{Binding}"
                                              TextChanged="Function_TextChanged_1"
                                              Text="{Binding Val}"
                                              TextWrapping="Wrap"></TextBox>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                        <Button Grid.Row="1" HorizontalAlignment="Right" Width="120"
+                                    Click="NewFunction_Click_1"
+                                    >New</Button>
+                    </Grid>
                 </TabItem>
                 <TabItem Header="XAML">
                     <ScrollViewer >

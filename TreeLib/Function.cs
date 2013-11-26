@@ -8,6 +8,7 @@ using System.Xml.Linq;
 namespace TreeLib {
     public class Function {
         public Function() {
+            this.Val = "";
             this.Valid = false;
         }
         public string Val { get; set; }

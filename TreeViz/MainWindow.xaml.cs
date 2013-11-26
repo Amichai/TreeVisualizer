@@ -31,7 +31,6 @@ namespace TreeViz {
 
             NodeFunctions.LoadLibraries(xml);
             this.VisualizationRoot.Children.Add(this.Root.ToUIElement());
-
         }
 
         public List<Function> Functions {
@@ -83,7 +82,7 @@ namespace TreeViz {
             this.VisualizationRoot.Children.Add(this.Root.ToUIElement());
         }
 
-        private string _DataSource = @"..\..\DataSet2.xml";
+        private string _DataSource = @"..\..\DataSet3.xml";
         public string DataSource {
             get { return _DataSource; }
             set {
@@ -131,6 +130,12 @@ namespace TreeViz {
         private void Function_TextChanged_1(object sender, TextChangedEventArgs e) {
             var c = (sender as TextBox).Tag as Function;
             c.Valid = false;
+        }
+
+        private void NewFunction_Click_1(object sender, RoutedEventArgs e) {
+            NodeFunctions.AddFunction(new Function());
+            this.functionLib.ItemsSource = null;
+            this.functionLib.ItemsSource = NodeFunctions.Functions;
         }
     }
 }

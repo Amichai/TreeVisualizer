@@ -25,7 +25,7 @@ namespace ExecutionEngine {
               //engine.AddReference(typeof(Url).Assembly.Location);
             //engine.AddReference(typeof(JObject).Assembly.Location);
             engine.AddReference(typeof(XElement).Assembly.Location);
-            engine.AddReference(typeof(UIElement).Assembly.Location);
+            engine.AddReference(typeof(UIElement).Assembly.Location);   
             engine.AddReference(typeof(DependencyObject).Assembly.Location);
             engine.AddReference(typeof(TextBlock).Assembly.Location);
             engine.AddReference(typeof(System.ComponentModel.ISupportInitialize).Assembly.Location);

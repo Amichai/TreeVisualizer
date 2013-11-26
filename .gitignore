@@ -6,3 +6,7 @@ TreeViz/bin
 TreeViz/obj/
 packages
 TreeViz.v11.suo
+slnAnalyzer/bin/
+slnAnalyzer/obj/
+SlnViz/bin/
+SlnViz/obj
