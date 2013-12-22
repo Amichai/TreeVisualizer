@@ -25,6 +25,7 @@ namespace TreeViz {
         public MainWindow() {
             InitializeComponent();
             this.DataContext = this;
+
             var xml = XElement.Load(this.DataSource);
             this.Root = Node.FromXml(xml.Element("Node"));
             this.tree.ItemsSource = new List<Node>() { this.Root };
@@ -82,7 +83,8 @@ namespace TreeViz {
             this.VisualizationRoot.Children.Add(this.Root.ToUIElement());
         }
 
-        private string _DataSource = @"..\..\DataSet3.xml";
+        //private string _DataSource = @"..\..\DataSet3.xml";
+        private string _DataSource = @"C:\Users\Amichai\Documents\Visual Studio 2012\Projects\TreeViz\TreeViz\DataSet3.xml";
         public string DataSource {
             get { return _DataSource; }
             set {

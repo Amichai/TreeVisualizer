@@ -89,7 +89,18 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ExecutionEngine.xaml.cs">
+      <DependentUpon>ExecutionEngine.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ResultLogString.cs" />
+    <Compile Include="ResultLogControl.xaml.cs">
+      <DependentUpon>ResultLogControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SyntaxNode.cs" />
+    <Page Include="ExecutionEngine.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -102,6 +113,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="ResultLogControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">

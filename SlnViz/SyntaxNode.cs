@@ -71,7 +71,9 @@ namespace SlnViz {
                     case NodeType.PropertyMethod:
                         var l1= this.Node.DescendantNodes().OfType<PropertyDeclarationSyntax>().Select(i => new SyntaxNode(i)).ToList();
                         var l2= this.Node.DescendantNodes().OfType<MethodDeclarationSyntax>().Select(i => new SyntaxNode(i));
+                        var l3 = this.Node.DescendantNodes().OfType<ConstructorDeclarationSyntax>().Select(i => new SyntaxNode(i));
                         l1.AddRange(l2);
+                        l1.AddRange(l3);
                         return l1;
 
 
@@ -98,6 +100,9 @@ namespace SlnViz {
                 } else if (this.Node is PropertyDeclarationSyntax) {
                     var cast = this.Node as PropertyDeclarationSyntax;
                     toReturn += "Property: " + cast.Type.ToFullString() + cast.Identifier;
+                } else if (this.Node is ConstructorDeclarationSyntax) {
+                    var cast = this.Node as ConstructorDeclarationSyntax;
+                    toReturn += "Constructor: " + cast.Identifier.ToFullString() + cast.ParameterList.ToFullString();
                 }
                 
                 return toReturn;
