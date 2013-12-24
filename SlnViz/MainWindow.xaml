@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:ad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:l="clr-namespace:SlnViz"
+        xmlns:tr="clr-namespace:TreeViz;assembly=TreeViz"
         Loaded="Window_Loaded_1"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
@@ -24,7 +25,13 @@
                                 <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                                     <StackPanel Margin="5" Background="LightGray">
                                         <CheckBox IsChecked="{Binding Selected}">Full Text</CheckBox>
-                                        <TextBlock Margin="20 0 0 0" Text="{Binding FullText, Mode=OneWay}" Visibility="{Binding Path=Selected, Converter={StaticResource BoolToVis}}"></TextBlock>
+                                            <Grid Margin="20 0 0 0" Visibility="{Binding Path=Selected, Converter={StaticResource BoolToVis}}">
+                                                <tr:MvvmTextEditor  Text="{Binding FullText, Mode=OneWay}" ShowLineNumbers="True"
+                                                                    HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"
+                                                                    IsReadOnly="True"
+                                                                    />
+                                            </Grid>
+                                            <!--<TextBlock Margin="20 0 0 0" Text="{Binding FullText, Mode=OneWay}" Visibility="{Binding Path=Selected, Converter={StaticResource BoolToVis}}"></TextBlock>-->
                                         <TextBlock Text="{Binding Filepath, Mode=OneWay}"></TextBlock>
                                         <TextBlock Text="{Binding AsString, Mode=OneWay}"></TextBlock>
                                         <TextBlock Text="{Binding Description, Mode=OneWay}"></TextBlock>
