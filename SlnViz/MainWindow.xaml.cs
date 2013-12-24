@@ -27,17 +27,20 @@ namespace SlnViz {
     public partial class MainWindow : Window {
         public MainWindow() {
             InitializeComponent();
-            string path = @"..\..\..\TreeViz.sln";
+            //string path = @"..\..\..\TreeViz.sln";
+            string path = @"C:\Users\Amichai\Documents\Visual Studio 2012\Projects\ComputationalPhysics\computationalPhysics.sln";
             IWorkspace workspace = Workspace.LoadSolution(path);
 
             ISolution sln = workspace.CurrentSolution;
-            this.execution.Init(path);
             //this.NodeTypes.ItemsSource = Enum.GetValues(typeof(SyntaxNode.NodeType)).Cast<SyntaxNode.NodeType>();
             //this.NodeTypes.SelectionChanged += NodeTypes_SelectionChanged;
             List<SyntaxNode> nodes = new List<SyntaxNode>();
             foreach (var p in sln.Projects) {
-                nodes.AddRange(p.Documents.Select(i => new SyntaxNode(i.GetSyntaxTree().GetRoot())));
+                var selectedNodes = p.Documents.Select(i => new SyntaxNode(i.GetSyntaxTree().GetRoot()));
+                nodes.AddRange(selectedNodes);
             }
+            
+            this.execution.Init(path, nodes);
             this.tree.ItemsSource = nodes;
             //var proj = sln.Projects.First();
 

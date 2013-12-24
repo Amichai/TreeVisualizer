@@ -9,7 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SlnViz {
-    class SyntaxNode : INotifyPropertyChanged {
+    public class SyntaxNode : INotifyPropertyChanged {
         public CommonSyntaxNode Node { get; set; }
         public SyntaxNode(CommonSyntaxNode n) {
             this.Node = n;
@@ -18,6 +18,18 @@ namespace SlnViz {
 
         public enum NodeType { CompilationUnit, Method, Property, Namespace, Class, PropertyMethod };
         public static NodeType TypeToShow;
+
+        public List<string> GetNamespaces() {
+            List<string> result = new List<string>();
+            if (this.Node is NamespaceDeclarationSyntax) {
+                result.Add((this.Node as NamespaceDeclarationSyntax).Name.ToFullString());
+            } else if (this.ChildrenType == NodeType.Namespace) {
+                foreach(var r in this.Children.Select(i => i.GetNamespaces())){
+                    result.AddRange(r);
+                }
+            }
+            return result;
+        }
 
         private bool _Selected;
         public bool Selected {
@@ -90,19 +102,26 @@ namespace SlnViz {
                     toReturn += "Namespace: " + (this.Node as NamespaceDeclarationSyntax).Name;
                 } else if (this.Node is MethodDeclarationSyntax) {
                     var cast = this.Node as MethodDeclarationSyntax;
-                    toReturn += "Method: " + cast.ReturnType.ToFullString() + cast.Identifier.ToFullString() + cast.ParameterList.ToFullString();
+                    toReturn += "Method: " + string.Concat(cast.Modifiers.Select(i => i.ToString() + " ")) +
+                        cast.ReturnType.ToFullString() + cast.Identifier.ToFullString() + cast.ParameterList.ToFullString();
                 } else if (this.Node is CompilationUnitSyntax) {
                     var cast = this.Node as CompilationUnitSyntax;
                     //toReturn += "Compilation unit: " + cast.;
                 } else if (this.Node is ClassDeclarationSyntax) {
                     var cast = this.Node as ClassDeclarationSyntax;
-                    toReturn += "Class: " + cast.Identifier;
+                    toReturn += "Class: " +
+                        string.Concat(cast.Modifiers.Select(i => i.ToString() + " ")) +
+                        cast.Identifier;
                 } else if (this.Node is PropertyDeclarationSyntax) {
                     var cast = this.Node as PropertyDeclarationSyntax;
-                    toReturn += "Property: " + cast.Type.ToFullString() + cast.Identifier;
+                    toReturn += "Property: " +
+                        string.Concat(cast.Modifiers.Select(i => i.ToString() + " ")) +
+                        cast.Type.ToFullString() + cast.Identifier;
                 } else if (this.Node is ConstructorDeclarationSyntax) {
                     var cast = this.Node as ConstructorDeclarationSyntax;
-                    toReturn += "Constructor: " + cast.Identifier.ToFullString() + cast.ParameterList.ToFullString();
+                    toReturn += "Constructor: " +
+                        string.Concat(cast.Modifiers.Select(i => i.ToString() + " ")) +
+                        cast.ParameterList.ToFullString();
                 }
                 
                 return toReturn;

@@ -6,6 +6,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,42 +25,59 @@ namespace SlnViz {
     /// Interaction logic for ExecutionEngine.xaml
     /// </summary>
     public partial class ExecutionEngine : UserControl, INotifyPropertyChanged {
-        private Session session;
-        private ScriptEngine engine;
+        private static Session session;
+        private static ScriptEngine engine;
 
         public ExecutionEngine() {
             InitializeComponent();
         }
 
-        public void Init(string filepath) {
+        List<string> importedNamespaces = new List<string>();
+
+        public void Init(string filepath, List<SyntaxNode> nodes) {
             IWorkspace workspace = Workspace.LoadSolution(filepath);
             ISolution sln = workspace.CurrentSolution;
-            this.engine = new ScriptEngine();
+            engine = new ScriptEngine();
             foreach (var proj in sln.Projects) {
 
                 var assemblyName = proj.AssemblyName;
-                engine.ImportNamespace(assemblyName);
+                importNamespace(assemblyName);
                 var binPath = System.IO.Path.Combine(new System.IO.FileInfo(proj.FilePath).Directory.FullName, "bin", "debug", string.Format("{0}.exe", assemblyName));
                 if (System.IO.File.Exists(binPath)) {
+                    Debug.Print("Bin path: " + binPath);
                     engine.AddReference(new MetadataFileReference(binPath));
                 }
 
                 binPath = System.IO.Path.Combine(new System.IO.FileInfo(proj.FilePath).Directory.FullName, "bin", "debug", string.Format("{0}.dll", assemblyName));
                 if (System.IO.File.Exists(binPath)) {
+                    Debug.Print("Bin path: " + binPath);
                     engine.AddReference(new MetadataFileReference(binPath));
                 }
                 foreach (var r in proj.MetadataReferences) {
                     engine.AddReference(r);
                 }
             }
-            //var proj = sln.Projects.First();
-            //foreach (var proj in sln.Projects) {
-            this.session = engine.CreateSession();
-            //var result= l.Execute("new MainWindow();");
-            //var result = this.session.Execute("new MvvmTextEditor()");
+
+            foreach (var n in nodes) {
+                var namespaces = n.GetNamespaces();
+                foreach (var space in namespaces) {
+                    importNamespace(space);
+                }
+            }
+            session = engine.CreateSession();
         }
 
-        public object Execute(string inputText) {
+        private void importNamespace(string space) {
+            space = space.TrimEnd();
+            if (!this.importedNamespaces.Contains(space)) {
+                engine.ImportNamespace(space);
+                importedNamespaces.Add(space);
+                Debug.Print("space: " + space);
+            } 
+
+        }
+
+        public static object Execute(string inputText) {
             if (string.IsNullOrWhiteSpace(inputText)) {
                 return "";
             }

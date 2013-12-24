@@ -59,7 +59,10 @@ namespace SlnViz {
         }
 
         private void Add_Click_1(object sender, RoutedEventArgs e) {
-            this.ResultLog.Add(new ResultLogString(this.InputText));
+            this.ResultLog.Add(
+                new ResultLogString(this.InputText,
+                ExecutionEngine.Execute(this.InputText).ToString()
+                ));
         }
     }
 }

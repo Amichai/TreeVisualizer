@@ -18,22 +18,14 @@
        </Grid.ColumnDefinitions>
         <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding InputText}"></TextBox>
         <Button Grid.Row="0" Grid.Column="1" Padding="10,0,10,0" Click="Add_Click_1">Add</Button>
-        <ItemsControl ItemsSource="{Binding ResultLog}" Grid.ColumnSpan="2" Grid.Row="1">
+        <DataGrid ItemsSource="{Binding ResultLog}" Grid.ColumnSpan="2" Grid.Row="1">
+        </DataGrid>
+        <!--<ItemsControl ItemsSource="{Binding ResultLog}" Grid.ColumnSpan="2" Grid.Row="1">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Text="{Binding Created}" Grid.Column="0"/>
-                        <GridSplitter Grid.Column="1"></GridSplitter>
-                        <TextBlock Text="{Binding Text}" Grid.Column="2" />
-                        
-                    </Grid>
+                    <TextBlock >Testing</TextBlock>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
-        </ItemsControl>
+        </ItemsControl>-->
     </Grid>
 </UserControl>
