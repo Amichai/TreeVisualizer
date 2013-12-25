@@ -60,6 +60,21 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Reactive.Core">
+      <HintPath>..\packages\Rx-Core.2.2.2\lib\net45\System.Reactive.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Interfaces">
+      <HintPath>..\packages\Rx-Interfaces.2.2.2\lib\net45\System.Reactive.Interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Linq">
+      <HintPath>..\packages\Rx-Linq.2.2.2\lib\net45\System.Reactive.Linq.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.PlatformServices">
+      <HintPath>..\packages\Rx-PlatformServices.2.2.2\lib\net45\System.Reactive.PlatformServices.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Reactive.Windows.Threading">
+      <HintPath>..\packages\Rx-XAML.2.2.2\lib\net45\System.Reactive.Windows.Threading.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -95,6 +110,9 @@
     <Compile Include="ExecutionEngine.xaml.cs">
       <DependentUpon>ExecutionEngine.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PageLine.xaml.cs">
+      <DependentUpon>PageLine.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ResultLogString.cs" />
     <Compile Include="ResultLogControl.xaml.cs">
       <DependentUpon>ResultLogControl.xaml</DependentUpon>
@@ -116,6 +134,10 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Page Include="PageLine.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ResultLogControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -150,10 +172,17 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\EquationEditor\GridSplitter\GridSplitter.csproj">
+      <Project>{4b9e3965-90a1-4468-bf94-5972c417ff52}</Project>
+      <Name>GridSplitter</Name>
+    </ProjectReference>
     <ProjectReference Include="..\TreeViz\TreeViz.csproj">
       <Project>{0ca52bac-c3e3-4f4d-8e18-453b357ba1c6}</Project>
       <Name>TreeViz</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\remove.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

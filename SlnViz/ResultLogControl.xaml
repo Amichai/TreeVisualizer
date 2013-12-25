@@ -20,7 +20,6 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
         <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Filepath}"
-                 AcceptsReturn="True" AcceptsTab="False"
                  ></TextBox>
         <Button Grid.Row="0" Grid.Column="1" Padding="10,0,10,0" Click="Open_Click_1">Open</Button>
         <Button Grid.Row="0" Grid.Column="2" Padding="10,0,10,0" Click="Save_Click_1">Save</Button>

@@ -7,15 +7,8 @@
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
-        </Grid.RowDefinitions>
-        <TextBox Grid.Row="0" PreviewKeyDown="TextBox_PreviewKeyDown_1" Text="{Binding InputText}" TextChanged="TextBox_TextChanged_1"></TextBox>
-        <ScrollViewer Grid.Row="1"  HorizontalScrollBarVisibility="Auto">
-            <StackPanel Name="outputStack">
-                
-            </StackPanel>
+        <ScrollViewer HorizontalScrollBarVisibility="Auto">
+            <StackPanel Name="outputStack" />
         </ScrollViewer>
     </Grid>
 </UserControl>

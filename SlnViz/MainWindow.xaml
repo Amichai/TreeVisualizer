@@ -5,6 +5,7 @@
         xmlns:l="clr-namespace:SlnViz"
         xmlns:tr="clr-namespace:TreeViz;assembly=TreeViz"
         Loaded="Window_Loaded_1"
+        DataContext="{Binding RelativeSource={RelativeSource Self}}"
         Title="MainWindow" Height="350" Width="525">
     <Grid>
         <Grid.Resources>
@@ -15,7 +16,20 @@
                 <ad:LayoutPanel>
                     <ad:LayoutDocumentPane>
                         <ad:LayoutDocument Title="Syntax Tree">
-                                <TreeView Name="tree" Grid.Row="1">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Filepath}" />
+                                <Button Grid.Row="0" Grid.Column="1" Padding="10,0,10,0" Click="Open_Click_1">Open</Button>
+                                <Button Grid.Row="0" Grid.Column="2" Padding="10,0,10,0" Click="Reload_Click_1">Reload</Button>
+                                <TreeView Name="tree" Grid.Row="1" Grid.ColumnSpan="3">
                                 <TreeView.ItemContainerStyle>
                                     <Style TargetType="{x:Type TreeViewItem}">
                                         <Setter Property="Focusable" Value="False"/>
@@ -39,6 +53,7 @@
                                 </HierarchicalDataTemplate>
                             </TreeView.ItemTemplate>
                         </TreeView>
+                            </Grid>
                         </ad:LayoutDocument>
                         <ad:LayoutDocument Title="Execution Engine">
                             <l:ExecutionEngine x:Name="execution"/>
