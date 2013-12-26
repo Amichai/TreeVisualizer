@@ -212,7 +212,6 @@ namespace SlnViz {
                 var sender = ((i.Sender as TextBox).Tag as PageLine);
                 var e = (i.EventArgs as KeyEventArgs);
                 if (e.Key == Key.Enter && (Keyboard.IsKeyDown(Key.RightShift) || Keyboard.IsKeyDown(Key.LeftShift))) {
-                    //var result = ExecutionEngine.Execute(newLine.input.Text);
                     var result = AppendCSharp(newLine.input.Text, newLine.LineNumber);
                     newLine.SetResult(result);
                     AppendNewLine(new PageLine());

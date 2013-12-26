@@ -92,6 +92,8 @@ namespace SlnViz {
             if (result is string) {
                 var asString = result as string;
                 stringResult(asString);
+            } else if (result is Window) {
+                (result as Window).ShowDialog();
             } else if (result is FrameworkElement) {
                 this.NewUIResult.OnNext(result as FrameworkElement);
             //} else if (result is ILScene) {

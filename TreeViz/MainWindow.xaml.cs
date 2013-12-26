@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +32,7 @@ namespace TreeViz {
             this.tree.ItemsSource = new List<Node>() { this.Root };
 
             NodeFunctions.LoadLibraries(xml);
+
             this.VisualizationRoot.Children.Add(this.Root.ToUIElement());
         }
 
@@ -80,7 +82,11 @@ namespace TreeViz {
             NodeFunctions.RefreshLibraries();
 
             this.VisualizationRoot.Children.Clear();
-            this.VisualizationRoot.Children.Add(this.Root.ToUIElement());
+            try {
+                this.VisualizationRoot.Children.Add(this.Root.ToUIElement());
+            } catch (Exception Exception){
+                Debug.Print("Failed to refresh: " + Exception.Message);
+            }
         }
 
         //private string _DataSource = @"..\..\DataSet3.xml";

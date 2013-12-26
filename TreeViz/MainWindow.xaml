@@ -10,18 +10,24 @@
             <ColumnDefinition Width="5"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
-        <StackPanel >
-            <Button Click="Refresh_Click_1">Refresh</Button>
-            <TreeView Name="tree">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20" />
+                <RowDefinition Height="200" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Button Click="Refresh_Click_1" Grid.Row="0">Refresh</Button>
+            <TreeView Name="tree" Grid.Row="1">
                 <TreeView.ItemTemplate>
                     <HierarchicalDataTemplate ItemsSource="{Binding Children}">
                         <TextBlock Text="{Binding AsString, Mode=OneWay}"></TextBlock>
                     </HierarchicalDataTemplate>
                 </TreeView.ItemTemplate>
             </TreeView>
-            <Grid Name="VisualizationRoot">
-            </Grid>
-        </StackPanel>
+            <GridSplitter Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+            <Grid Name="VisualizationRoot" Grid.Row="3"/>
+        </Grid>
         <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
         <Grid Grid.Column="2">
             <Grid.RowDefinitions>
