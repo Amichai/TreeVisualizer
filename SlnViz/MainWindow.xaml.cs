@@ -30,7 +30,8 @@ namespace SlnViz {
         public MainWindow() {
             InitializeComponent();
             //string path = @"..\..\..\TreeViz.sln";
-            this.Filepath = @"C:\Users\Amichai\Documents\Visual Studio 2012\Projects\ComputationalPhysics\computationalPhysics.sln";
+            //this.Filepath = @"C:\Users\Amichai\Documents\Visual Studio 2012\Projects\ComputationalPhysics\computationalPhysics.sln";
+            this.Filepath = @"C:\Users\Amichai\Documents\Visual Studio 2012\Projects\EquationEditor\EquationEditor.sln";
             loadSln(this.Filepath);
         }
 

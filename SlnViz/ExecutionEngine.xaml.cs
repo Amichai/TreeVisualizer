@@ -37,6 +37,16 @@ namespace SlnViz {
         }
 
         List<string> importedNamespaces = new List<string>();
+        List<string> importedRefs = new List<string>();
+
+        private void addReference(MetadataReference r) {
+            string refName = r.Display.Split('\\').Last();
+            if (!importedRefs.Contains(refName)) {
+                engine.AddReference(r);
+                Debug.Print("Ref: " + r.Display);
+                importedRefs.Add(refName);
+            } 
+        }
 
         public void Init(string filepath, List<SyntaxNode> nodes) {
             IWorkspace workspace = Workspace.LoadSolution(filepath);
@@ -57,8 +67,9 @@ namespace SlnViz {
                     Debug.Print("Bin path: " + binPath);
                     engine.AddReference(new MetadataFileReference(binPath));
                 }
+
                 foreach (var r in proj.MetadataReferences) {
-                    engine.AddReference(r);
+                    addReference(r);
                 }
             }
 
@@ -68,8 +79,14 @@ namespace SlnViz {
                     importNamespace(space);
                 }
             }
+
+            foreach (var n in standardNamespaces) {
+                importNamespace(n);
+            }
             session = engine.CreateSession();
         }
+
+        private List<string> standardNamespaces = new List<string>() { "System", "System.Linq", "System.Collections", "System.Collections.Generic" };
 
         private void importNamespace(string space) {
             space = space.TrimEnd();
@@ -78,7 +95,6 @@ namespace SlnViz {
                 importedNamespaces.Add(space);
                 Debug.Print("space: " + space);
             } 
-
         }
 
         public void CSharpAssign(string result, int lineNumber) {
