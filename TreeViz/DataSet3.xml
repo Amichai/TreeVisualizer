@@ -28,7 +28,7 @@
   <Visualizations>
     <Visualization Type="+" AsString="node =&gt; node.Value.ToString()" ToUIElement="node =&gt; { &#xD;&#xA;StackPanel sp = stack() as StackPanel;&#xD;&#xA;sp.Children.Add(node.Children[1].ToUIElement()); &#xD;&#xA;var t1 = op() as TextBlock;&#xD;&#xA;t1.Text = &quot; + &quot;;&#xD;&#xA;sp.Children.Add(t1); &#xD;&#xA;sp.Children.Add(node.Children[0].ToUIElement());  &#xD;&#xA;return sp; };  " />
     <Visualization Type="/" AsString="node =&gt; node.Value.ToString()" ToUIElement="node =&gt; { &#xD;&#xA;StackPanel sp = stack() as StackPanel;&#xD;&#xA;sp.Children.Add(node.Children[1].ToUIElement()); &#xD;&#xA;var t1 = op() as TextBlock;&#xD;&#xA;t1.Text = &quot; / &quot;;&#xD;&#xA;sp.Children.Add(t1); &#xD;&#xA;sp.Children.Add(node.Children[0].ToUIElement());  return sp; };  " />
-    <Visualization Type="Number" AsString="node =&gt; node.Value.ToString()" ToUIElement="node =&gt; {&#xD;&#xA;var t = number() as TextBlock;&#xD;&#xA;t.Text = node.AsString;&#xD;&#xA;return t;&#xD;&#xA;};" />
+    <Visualization Type="Number" AsString="node =&gt; node.Value.ToString()" ToUIElement="node =&gt; {&#xD;&#xA;StackPanel sp = spVert();&#xD;&#xA;&#xD;&#xA;var t = number() as TextBlock;&#xD;&#xA;t.Text = node.AsString;&#xD;&#xA;sp.Children.Add(t);&#xD;&#xA;return sp;&#xD;&#xA;};" />
   </Visualizations>
   <XamlControls>
     <XamlControl Name="number" Val="&lt;TextBlock xmlns=&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot; &#xD;&#xA;HorizontalAlignment=&quot;Center&quot;&#xD;&#xA;VerticalAlignment=&quot;Center&quot;&#xD;&#xA;Text=&quot;test&quot; /&gt;" />
@@ -37,5 +37,6 @@
   </XamlControls>
   <Functions>
     <Function Val="string Testing() { return &quot;testing2&quot;; }" />
+    <Function Val="StackPanel spVert() {&#xD;&#xA;var sp = new StackPanel();&#xD;&#xA;sp.HorizontalAlignment = System.Windows.HorizontalAlignment.Center;&#xD;&#xA;sp.VerticalAlignment = System.Windows.VerticalAlignment.Center;&#xD;&#xA;//sp.Background = System.Windows.Media.Brushes.Red;&#xD;&#xA;sp.Children.Add(new TextBlock() { Text = &quot;-&quot; });&#xD;&#xA;return sp;&#xD;&#xA;}" />
   </Functions>
 </Data>

@@ -1,4 +1,6 @@
 ﻿using Roslyn.Compilers;
+using Roslyn.Compilers.Common;
+using Roslyn.Compilers.CSharp;
 using Roslyn.Scripting;
 using Roslyn.Scripting.CSharp;
 using Roslyn.Services;
@@ -7,8 +9,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reactive.Linq;
+using System.Reactive.Subjects;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -32,12 +37,23 @@ namespace SlnViz {
 
         public ExecutionEngine() {
             InitializeComponent();
+            this.NamespaceImported = new Subject<string>();
+            this.BinaryImported = new Subject<string>();
             AppendNewLine(new PageLine());
             setFocus();
         }
 
+
+        public Subject<string> NamespaceImported;
+        public Subject<string> BinaryImported;
+
         List<string> importedNamespaces = new List<string>();
         List<string> importedRefs = new List<string>();
+
+        private void clearAllImports() {
+            this.importedNamespaces.Clear();
+            this.importedRefs.Clear();
+        }
 
         private void addReference(MetadataReference r) {
             string refName = r.Display.Split('\\').Last();
@@ -45,56 +61,100 @@ namespace SlnViz {
                 engine.AddReference(r);
                 Debug.Print("Ref: " + r.Display);
                 importedRefs.Add(refName);
-            } 
+                this.BinaryImported.OnNext(r.Display);
+            }
         }
 
-        public void Init(string filepath, List<SyntaxNode> nodes) {
-            IWorkspace workspace = Workspace.LoadSolution(filepath);
-            ISolution sln = workspace.CurrentSolution;
+        public void Init(ISolution sln, List<SyntaxNode> nodes) {
+            this.clearAllImports();
             engine = new ScriptEngine();
             foreach (var proj in sln.Projects) {
-
-                var assemblyName = proj.AssemblyName;
-                importNamespace(assemblyName);
-                var binPath = System.IO.Path.Combine(new System.IO.FileInfo(proj.FilePath).Directory.FullName, "bin", "debug", string.Format("{0}.exe", assemblyName));
-                if (System.IO.File.Exists(binPath)) {
-                    Debug.Print("Bin path: " + binPath);
-                    engine.AddReference(new MetadataFileReference(binPath));
-                }
-
-                binPath = System.IO.Path.Combine(new System.IO.FileInfo(proj.FilePath).Directory.FullName, "bin", "debug", string.Format("{0}.dll", assemblyName));
-                if (System.IO.File.Exists(binPath)) {
-                    Debug.Print("Bin path: " + binPath);
-                    engine.AddReference(new MetadataFileReference(binPath));
-                }
-
-                foreach (var r in proj.MetadataReferences) {
-                    addReference(r);
-                }
+                AddProject(proj);
             }
 
             foreach (var n in nodes) {
                 var namespaces = n.GetNamespaces();
                 foreach (var space in namespaces) {
-                    importNamespace(space);
+                    ImportNamespace(space);
                 }
             }
 
             foreach (var n in standardNamespaces) {
-                importNamespace(n);
+                ImportNamespace(n);
             }
             session = engine.CreateSession();
         }
 
+        public void Init2(string filepath, List<SyntaxNode> nodes) {
+            IWorkspace workspace = Workspace.LoadSolution(filepath);
+            ISolution sln = workspace.CurrentSolution;
+            engine = new ScriptEngine();
+            foreach (var proj in sln.Projects) {
+                AddProject(proj);
+            }
+            foreach (var n in nodes) {
+                var namespaces = n.GetNamespaces();
+                foreach (var space in namespaces) {
+                    ImportNamespace(space);
+                }
+            }
+
+            foreach (var n in standardNamespaces) {
+                ImportNamespace(n);
+            }
+            session = engine.CreateSession();
+        }
+
+
+        public void AddProject(IProject proj) {
+
+            bool errors;
+            Assembly a;
+            string assemblyName = string.Format(@"Greeter{0}.dll", ++assemblyCounter);
+            var fullAssemblyName = System.IO.Path.Combine(Directory.GetCurrentDirectory(), assemblyName);
+
+            try {
+                createAssembly(assemblyName, (Compilation)proj.GetCompilation(), out errors, out a);
+                addReference(new MetadataFileReference(fullAssemblyName));
+                foreach (var r in proj.MetadataReferences) {
+                    addReference(r);
+                }
+            } catch {
+                Debug.Print("Failed to reference project: " + proj.Name);
+            }
+            
+
+        }
+        public void AddProject2(IProject proj) {
+            var assemblyName = proj.AssemblyName;
+            ImportNamespace(assemblyName);
+            var binPath = System.IO.Path.Combine(new System.IO.FileInfo(proj.FilePath).Directory.FullName, "bin", "debug", string.Format("{0}.exe", assemblyName));
+            if (System.IO.File.Exists(binPath)) {
+                Debug.Print("Bin path: " + binPath);
+                addReference(new MetadataFileReference(binPath));
+            }
+
+            binPath = System.IO.Path.Combine(new System.IO.FileInfo(proj.FilePath).Directory.FullName, "bin", "debug", string.Format("{0}.dll", assemblyName));
+            if (System.IO.File.Exists(binPath)) {
+                Debug.Print("Bin path: " + binPath);
+                addReference(new MetadataFileReference(binPath));
+            }
+
+            foreach (var r in proj.MetadataReferences) {
+                addReference(r);
+            }
+        }
+
         private List<string> standardNamespaces = new List<string>() { "System", "System.Linq", "System.Collections", "System.Collections.Generic" };
 
-        private void importNamespace(string space) {
+        public void ImportNamespace(string space) {
             space = space.TrimEnd();
             if (!this.importedNamespaces.Contains(space)) {
                 engine.ImportNamespace(space);
                 importedNamespaces.Add(space);
+                this.NamespaceImported.OnNext(space);
                 Debug.Print("space: " + space);
-            } 
+            }
         }
 
         public void CSharpAssign(string result, int lineNumber) {
@@ -163,7 +223,7 @@ namespace SlnViz {
         }
 
         private void stringResult(string input) {
-            TextBlock t = new TextBlock() { HorizontalAlignment = System.Windows.HorizontalAlignment.Left};
+            TextBlock t = new TextBlock() { HorizontalAlignment = System.Windows.HorizontalAlignment.Left };
             t.Text = input;
             this.outputStack.Children.Add(t);
         }
@@ -309,6 +369,72 @@ namespace SlnViz {
             PageLine.ResetLineCounter();
         }
 
+        private static int assemblyCounter = 0;
+
+        public void Launch(IProject i, SyntaxTree[] trees) {
+            string assemblyName;
+            bool errors;
+            Assembly a;
+            getAssembly(i, trees, out assemblyName, out errors, out a);
+            //AppDomain.CurrentDomain.ExecuteAssembly(assemblyName);
+            Process.Start(assemblyName);
+        }
+
+        internal void AddCompilation(IProject i, SyntaxTree[] trees) {
+            string assemblyName;
+            bool errors;
+            Assembly a;
+            getAssembly(i, trees, out assemblyName, out errors, out a);
+
+            if (errors) {
+                return;
+            }
+            //var a2 = AssemblyIdentity.FromAssemblyDefinition(a);
+            addReference(new MetadataFileReference(a.Location));
+            //engine.AddReference(a);
+        }
+
+        private static void getAssembly(IProject i, SyntaxTree[] trees, out string assemblyName, out bool errors, out Assembly a) {
+            assemblyName = string.Format(@"Greeter{0}.dll", ++assemblyCounter);
+            //var syntaxTree = SyntaxTree.ParseText(text);
+            foreach (var t in trees) {
+                var text = t.GetText().ToString();
+                Debug.Print("Text: " + text);
+            }
+            var comp = Compilation.Create(assemblyName,
+            syntaxTrees: trees,
+                     references:
+                i.MetadataReferences,
+                //},
+                  options: new CompilationOptions(OutputKind.DynamicallyLinkedLibrary));
+
+
+            //var exeName = "testingComp.exe";
+            //var sucesss = comp.Emit(exeName);
+            //Process.Start(exeName);
+
+            createAssembly(assemblyName, comp, out errors, out a);
+        }
+
+        private static void createAssembly(string assemblyName, Compilation comp, out bool errors, out Assembly a) {
+            EmitResult result;
+            using (var file = new FileStream(assemblyName, FileMode.Create)) {
+                result = comp.Emit(file);
+            }
+            errors = false;
+
+            if (result.Diagnostics.Count() > 0) {
+                foreach (var d in result.Diagnostics) {
+                    Debug.Print(d.Info.GetMessage());
+                }
+                errors = true;
+            }
+            if (errors) {
+
+            }
+
+            a = Assembly.LoadFrom(assemblyName);
+        }
     }
 
 }

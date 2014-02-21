@@ -30,29 +30,70 @@
                                 <Button Grid.Row="0" Grid.Column="1" Padding="10,0,10,0" Click="Open_Click_1">Open</Button>
                                 <Button Grid.Row="0" Grid.Column="2" Padding="10,0,10,0" Click="Reload_Click_1">Reload</Button>
                                 <TreeView Name="tree" Grid.Row="1" Grid.ColumnSpan="3">
-                                <TreeView.ItemContainerStyle>
-                                    <Style TargetType="{x:Type TreeViewItem}">
-                                        <Setter Property="Focusable" Value="False"/>
-                                    </Style>
-                                </TreeView.ItemContainerStyle>
-                            <TreeView.ItemTemplate>
-                                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                                    <StackPanel Margin="5" Background="LightGray">
-                                        <CheckBox IsChecked="{Binding Selected}">Full Text</CheckBox>
-                                            <Grid Margin="20 0 0 0" Visibility="{Binding Path=Selected, Converter={StaticResource BoolToVis}}">
-                                                <tr:MvvmTextEditor  Text="{Binding FullText, Mode=OneWay}" ShowLineNumbers="True"
+                                    <TreeView.ItemContainerStyle>
+                                        <Style TargetType="{x:Type TreeViewItem}">
+                                            <Setter Property="Focusable" Value="False"/>
+                                        </Style>
+                                    </TreeView.ItemContainerStyle>
+                                    <TreeView.ItemTemplate>
+                                        <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                                            <StackPanel Margin="5" Background="LightGray">
+                                                <CheckBox IsChecked="{Binding Selected}">Full Text</CheckBox>
+                                                <Grid Margin="20 0 0 0" Visibility="{Binding Path=Selected, Converter={StaticResource BoolToVis}}">
+                                                    <tr:MvvmTextEditor  Text="{Binding FullText, Mode=OneWay}" ShowLineNumbers="True"
                                                                     HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"
                                                                     IsReadOnly="True"
                                                                     />
-                                            </Grid>
-                                            <!--<TextBlock Margin="20 0 0 0" Text="{Binding FullText, Mode=OneWay}" Visibility="{Binding Path=Selected, Converter={StaticResource BoolToVis}}"></TextBlock>-->
-                                        <TextBlock Text="{Binding Filepath, Mode=OneWay}"></TextBlock>
-                                        <TextBlock Text="{Binding AsString, Mode=OneWay}"></TextBlock>
-                                        <TextBlock Text="{Binding Description, Mode=OneWay}"></TextBlock>
+                                                </Grid>
+                                                <!--<TextBlock Margin="20 0 0 0" Text="{Binding FullText, Mode=OneWay}" Visibility="{Binding Path=Selected, Converter={StaticResource BoolToVis}}"></TextBlock>-->
+                                                <TextBlock Text="{Binding Filepath, Mode=OneWay}"></TextBlock>
+                                                <TextBlock Text="{Binding AsString, Mode=OneWay}"></TextBlock>
+                                                <TextBlock Text="{Binding Description, Mode=OneWay}"></TextBlock>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <Button Click="GetTrivia_Click" Tag="{Binding}">Get Trivia</Button>
+                                                    <Button Click="AddMethod_Click" Tag="{Binding}">Add Method</Button>
+                                                    <Button Click="ExectueAssembly"  Tag="{Binding}">Execute Assembly</Button>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </HierarchicalDataTemplate>
+                                    </TreeView.ItemTemplate>
+                                </TreeView>
+                            </Grid>
+                        </ad:LayoutDocument>
+                        <ad:LayoutDocument Title="Imported References">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="5" />
+                                    <ColumnDefinition Width="2*" />
+                                </Grid.ColumnDefinitions>
+                                <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Auto">
+                                    <StackPanel >
+                                        <TextBlock FontWeight="Bold">Namespaces:</TextBlock>
+                                        <ItemsControl DataContext="{Binding Imported}" ItemsSource="{Binding Namespaces}">
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                   <TextBlock Text="{Binding}"></TextBlock>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBox Grid.Column="0" Text="{Binding NewNamespace}"></TextBox>
+                                            <Button Grid.Column="1" Click="AddNewNamespace_Click">Add</Button>
+                                        </Grid>
                                     </StackPanel>
-                                </HierarchicalDataTemplate>
-                            </TreeView.ItemTemplate>
-                        </TreeView>
+                                </ScrollViewer>
+                                <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+                                <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto">
+                                    <StackPanel >
+                                        <TextBlock FontWeight="Bold">Binary References:</TextBlock>
+                                        <ItemsControl DataContext="{Binding Imported}" ItemsSource="{Binding Binaries}" ></ItemsControl>
+                                    </StackPanel>
+                                </ScrollViewer>
                             </Grid>
                         </ad:LayoutDocument>
                         <ad:LayoutDocument Title="Execution Engine">

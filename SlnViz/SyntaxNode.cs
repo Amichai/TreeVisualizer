@@ -1,21 +1,28 @@
 ﻿using Roslyn.Compilers;
 using Roslyn.Compilers.Common;
 using Roslyn.Compilers.CSharp;
+using Roslyn.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace SlnViz {
     public class SyntaxNode : INotifyPropertyChanged {
         public CommonSyntaxNode Node { get; set; }
-        public SyntaxNode(CommonSyntaxNode n) {
+        public SyntaxNode(CommonSyntaxNode n, IDocument doc) {
             this.Node = n;
             this.Selected = false;
+            this.document = doc;
+            this.documentRootNode = doc.GetSyntaxRoot() as CompilationUnitSyntax;
         }
+
+        public IDocument document;
+        public CompilationUnitSyntax documentRootNode;
 
         public enum NodeType { CompilationUnit, Method, Property, Namespace, Class, PropertyMethod };
         public static NodeType TypeToShow;
@@ -45,7 +52,11 @@ namespace SlnViz {
 
         public FileLinePositionSpan LineSpan {
             get {
-                return this.Node.GetLocation().GetLineSpan(true);
+                try {
+                    return this.Node.GetLocation().GetLineSpan(true);
+                } catch {
+                    return new FileLinePositionSpan();
+                }
             }
         }
 
@@ -72,19 +83,20 @@ namespace SlnViz {
             get {
                 switch (this.ChildrenType) {
                     case NodeType.CompilationUnit:
-                        return this.Node.DescendantNodes().OfType<CompilationUnitSyntax>().Select(i => new SyntaxNode(i)).ToList();
+                        return this.Node.DescendantNodes().OfType<CompilationUnitSyntax>().Select(i => new SyntaxNode(i, document)).ToList();
                     case NodeType.Class:
-                        return this.Node.DescendantNodes().OfType<ClassDeclarationSyntax>().Select(i => new SyntaxNode(i)).ToList();
+                        return this.Node.DescendantNodes().OfType<ClassDeclarationSyntax>().Select(i => new SyntaxNode(i, document)).ToList();
                     case NodeType.Method:
-                        return this.Node.DescendantNodes().OfType<MethodDeclarationSyntax>().Select(i => new SyntaxNode(i)).ToList();
+                        var children = this.Node.DescendantNodes().OfType<MethodDeclarationSyntax>().Select(i => new SyntaxNode(i, document)).ToList();
+                        return children;
                     case NodeType.Namespace:
-                        return this.Node.DescendantNodes().OfType<NamespaceDeclarationSyntax>().Select(i => new SyntaxNode(i)).ToList();
+                        return this.Node.DescendantNodes().OfType<NamespaceDeclarationSyntax>().Select(i => new SyntaxNode(i, document)).ToList();
                     case NodeType.Property:
-                        return this.Node.DescendantNodes().OfType<PropertyDeclarationSyntax>().Select(i => new SyntaxNode(i)).ToList();
+                        return this.Node.DescendantNodes().OfType<PropertyDeclarationSyntax>().Select(i => new SyntaxNode(i, document)).ToList();
                     case NodeType.PropertyMethod:
-                        var l1= this.Node.DescendantNodes().OfType<PropertyDeclarationSyntax>().Select(i => new SyntaxNode(i)).ToList();
-                        var l2= this.Node.DescendantNodes().OfType<MethodDeclarationSyntax>().Select(i => new SyntaxNode(i));
-                        var l3 = this.Node.DescendantNodes().OfType<ConstructorDeclarationSyntax>().Select(i => new SyntaxNode(i));
+                        var l1 = this.Node.DescendantNodes().OfType<PropertyDeclarationSyntax>().Select(i => new SyntaxNode(i, document)).ToList();
+                        var l2 = this.Node.DescendantNodes().OfType<MethodDeclarationSyntax>().Select(i => new SyntaxNode(i, document));
+                        var l3 = this.Node.DescendantNodes().OfType<ConstructorDeclarationSyntax>().Select(i => new SyntaxNode(i, document));
                         l1.AddRange(l2);
                         l1.AddRange(l3);
                         return l1;
@@ -95,6 +107,8 @@ namespace SlnViz {
                 }
             }
         }
+
+        public static Subject<ProjectUpdated> ProjectUpdated = new Subject<ProjectUpdated>();
 
         public string Description {
             get {
@@ -148,5 +162,10 @@ namespace SlnViz {
                 eh(this, new PropertyChangedEventArgs(name));
             }
         }
+    }
+
+    public class ProjectUpdated {
+        public IProject Project { get; set; }
+        public SyntaxTree Tree { get; set; }
     }
 }
