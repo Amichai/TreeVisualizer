@@ -6,15 +6,40 @@
         xmlns:tr="clr-namespace:TreeViz;assembly=TreeViz"
         Loaded="Window_Loaded_1"
         DataContext="{Binding RelativeSource={RelativeSource Self}}"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="850" Width="825">
     <Grid>
         <Grid.Resources>
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
         </Grid.Resources>
-        <ad:DockingManager>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Filepath}" />
+        <Button Grid.Row="0" Grid.Column="1" Padding="10,0,10,0" Click="Open_Click_1">Open</Button>
+        <Button Grid.Row="0" Grid.Column="2" Padding="10,0,10,0" Click="Reload_Click_1">Reload</Button>
+        <StackPanel Grid.Row="1" Grid.Column="0" Orientation="Horizontal">
+        <TextBlock Margin="5">Recent Projects:</TextBlock>
+        <ComboBox Margin="5" Width="220">
+        </ComboBox>
+        </StackPanel>
+        <ad:DockingManager Grid.Row="2" Grid.ColumnSpan="4">
             <ad:LayoutRoot>
                 <ad:LayoutPanel>
                     <ad:LayoutDocumentPane>
+                        <ad:LayoutDocument Title="Notepad">
+                            <l:Notepad x:Name="notepad"></l:Notepad>
+                        </ad:LayoutDocument>
+                        <ad:LayoutDocument Title="Code Stats">
+                            <l:StatsView x:Name="stats"/>
+                            
+                        </ad:LayoutDocument>
                         <ad:LayoutDocument Title="Syntax Tree">
                             <Grid>
                                 <Grid.RowDefinitions>
@@ -26,9 +51,6 @@
                                     <ColumnDefinition Width="Auto" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <TextBox Grid.Row="0" Grid.Column="0" Text="{Binding Filepath}" />
-                                <Button Grid.Row="0" Grid.Column="1" Padding="10,0,10,0" Click="Open_Click_1">Open</Button>
-                                <Button Grid.Row="0" Grid.Column="2" Padding="10,0,10,0" Click="Reload_Click_1">Reload</Button>
                                 <TreeView Name="tree" Grid.Row="1" Grid.ColumnSpan="3">
                                     <TreeView.ItemContainerStyle>
                                         <Style TargetType="{x:Type TreeViewItem}">
@@ -40,9 +62,10 @@
                                             <StackPanel Margin="5" Background="LightGray">
                                                 <CheckBox IsChecked="{Binding Selected}">Full Text</CheckBox>
                                                 <Grid Margin="20 0 0 0" Visibility="{Binding Path=Selected, Converter={StaticResource BoolToVis}}">
-                                                    <tr:MvvmTextEditor  Text="{Binding FullText, Mode=OneWay}" ShowLineNumbers="True"
+                                                    <tr:MvvmTextEditor  Text="{Binding FullText, Mode=OneWay}" ShowLineNumbers="True" TextChanged="MvvmTextEditor_TextChanged_1"
                                                                     HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden"
-                                                                    IsReadOnly="True"
+                                                                    IsReadOnly="False"
+                                                                        Tag="{Binding}"
                                                                     />
                                                 </Grid>
                                                 <!--<TextBlock Margin="20 0 0 0" Text="{Binding FullText, Mode=OneWay}" Visibility="{Binding Path=Selected, Converter={StaticResource BoolToVis}}"></TextBlock>-->
@@ -50,9 +73,10 @@
                                                 <TextBlock Text="{Binding AsString, Mode=OneWay}"></TextBlock>
                                                 <TextBlock Text="{Binding Description, Mode=OneWay}"></TextBlock>
                                                 <StackPanel Orientation="Horizontal">
-                                                    <Button Click="GetTrivia_Click" Tag="{Binding}">Get Trivia</Button>
+                                                    <!--<Button Click="GetTrivia_Click" Tag="{Binding}">Get Trivia</Button>
                                                     <Button Click="AddMethod_Click" Tag="{Binding}">Add Method</Button>
-                                                    <Button Click="ExectueAssembly"  Tag="{Binding}">Execute Assembly</Button>
+                                                    <Button Click="ExectueAssembly"  Tag="{Binding}">Execute Assembly</Button>-->
+                                                    <Button Tag="{Binding}" Click="ReloadNode_Click">Reload</Button>
                                                 </StackPanel>
                                             </StackPanel>
                                         </HierarchicalDataTemplate>
@@ -102,6 +126,7 @@
                         <ad:LayoutDocument Title="Result Log">
                             <l:ResultLogControl />
                         </ad:LayoutDocument>
+
                     </ad:LayoutDocumentPane>
                 </ad:LayoutPanel>
             </ad:LayoutRoot>

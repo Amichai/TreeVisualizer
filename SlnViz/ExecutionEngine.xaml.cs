@@ -14,7 +14,9 @@ using System.Linq;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Reflection;
+using System.Reflection.Emit;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -69,6 +71,7 @@ namespace SlnViz {
             this.clearAllImports();
             engine = new ScriptEngine();
             foreach (var proj in sln.Projects) {
+
                 AddProject(proj);
             }
 
@@ -106,15 +109,19 @@ namespace SlnViz {
         }
 
 
-        public void AddProject(IProject proj) {
+        
 
+        public void AddProject(IProject proj) {
             bool errors;
-            Assembly a;
-            string assemblyName = string.Format(@"Greeter{0}.dll", ++assemblyCounter);
-            var fullAssemblyName = System.IO.Path.Combine(Directory.GetCurrentDirectory(), assemblyName);
+            string assemblyName = string.Format(proj.AssemblyName + "{0}.exe", assemblyCounter++);
+            var fullAssemblyName = getFullPath(assemblyName);
+            var comp = proj.GetCompilation();
+            
+            var compilation = Compilation.Create(assemblyName, 
+                new CompilationOptions(proj.CompilationOptions.OutputKind), comp.SyntaxTrees.Select(i => (SyntaxTree)i), comp.References, null, null);
 
             try {
-                createAssembly(assemblyName, (Compilation)proj.GetCompilation(), out errors, out a);
+                createAssembly(assemblyName, compilation, out errors);
                 addReference(new MetadataFileReference(fullAssemblyName));
                 foreach (var r in proj.MetadataReferences) {
                     addReference(r);
@@ -124,6 +131,11 @@ namespace SlnViz {
             }
             
 
+        }
+
+        private static string getFullPath(string assemblyName) {
+            var fullAssemblyName = System.IO.Path.Combine(Directory.GetCurrentDirectory(), assemblyName);
+            return fullAssemblyName;
         }
         public void AddProject2(IProject proj) {
             var assemblyName = proj.AssemblyName;
@@ -375,7 +387,7 @@ namespace SlnViz {
             string assemblyName;
             bool errors;
             Assembly a;
-            getAssembly(i, trees, out assemblyName, out errors, out a);
+            getAssembly(i, trees, out assemblyName, out errors);
             //AppDomain.CurrentDomain.ExecuteAssembly(assemblyName);
             Process.Start(assemblyName);
         }
@@ -384,17 +396,19 @@ namespace SlnViz {
             string assemblyName;
             bool errors;
             Assembly a;
-            getAssembly(i, trees, out assemblyName, out errors, out a);
+            getAssembly(i, trees, out assemblyName, out errors);
 
             if (errors) {
                 return;
             }
+            var fullAssemblyName = getFullPath(assemblyName);
             //var a2 = AssemblyIdentity.FromAssemblyDefinition(a);
-            addReference(new MetadataFileReference(a.Location));
+            addReference(new MetadataFileReference(fullAssemblyName));
+            
             //engine.AddReference(a);
         }
 
-        private static void getAssembly(IProject i, SyntaxTree[] trees, out string assemblyName, out bool errors, out Assembly a) {
+        private static void getAssembly(IProject i, SyntaxTree[] trees, out string assemblyName, out bool errors) {
             assemblyName = string.Format(@"Greeter{0}.dll", ++assemblyCounter);
             //var syntaxTree = SyntaxTree.ParseText(text);
             foreach (var t in trees) {
@@ -413,14 +427,21 @@ namespace SlnViz {
             //var sucesss = comp.Emit(exeName);
             //Process.Start(exeName);
 
-            createAssembly(assemblyName, comp, out errors, out a);
+            createAssembly(assemblyName, comp, out errors);
         }
 
-        private static void createAssembly(string assemblyName, Compilation comp, out bool errors, out Assembly a) {
+        private static void createAssembly(string assemblyName, Compilation comp, out bool errors) {
+            //AssemblyBuilder ab = new AssemblyBuilder()
+            //var s = comp.CreateDefaultWin32Resources(true, false, null, null);
+            
             EmitResult result;
             using (var file = new FileStream(assemblyName, FileMode.Create)) {
-                result = comp.Emit(file);
+                //result = comp.Emit(outputStream: file, outputName:null , pdbFileName: null, pdbStream: null, xmlDocStream: null, cancellationToken: CancellationToken.None ,win32ResourcesInRESFormat: s,manifestResources: null);
+                result = comp.Emit(outputStream: file);
+                file.Flush();
             }
+            
+            
             errors = false;
 
             if (result.Diagnostics.Count() > 0) {
@@ -430,10 +451,9 @@ namespace SlnViz {
                 errors = true;
             }
             if (errors) {
-
+                Debug.Print("DIAGNOSTIC ERRORS IN THE EXECUTION ENGINE");
             }
-
-            a = Assembly.LoadFrom(assemblyName);
+            
         }
     }
 

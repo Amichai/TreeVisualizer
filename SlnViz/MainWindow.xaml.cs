@@ -23,6 +23,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml.Linq;
+using TreeViz;
 
 namespace SlnViz {
     /// <summary>
@@ -52,7 +53,7 @@ namespace SlnViz {
             }
         }
 
-        ISolution thisSln;
+        ISolution inspectionSln;
 
         private void loadSln(string path) {
             if (path == "") {
@@ -60,9 +61,10 @@ namespace SlnViz {
             }
             IWorkspace workspace = Workspace.LoadSolution(path);
             ISolution sln = workspace.CurrentSolution;
-            this.thisSln = sln;
+            this.inspectionSln = sln;
 
             List<SyntaxNode> nodes = loadISolution(sln);
+            this.stats.SetNodes(nodes, path);
         }
 
         private List<SyntaxNode> loadISolution(ISolution sln) {
@@ -84,6 +86,8 @@ namespace SlnViz {
             }
             this.tree.ItemsSource = nodes;
             this.execution.Init(sln, nodes);
+            //this.execution.Init(sln.FilePath, nodes);
+            this.notepad.SetExecutionEngine(this.execution);
             return nodes;
         }
 
@@ -179,8 +183,8 @@ namespace SlnViz {
                 Tree = SyntaxTree.ParseText(document.GetText().ToString())
             };
 
-            this.thisSln = this.thisSln.UpdateDocument(document);
-            this.loadISolution(this.thisSln);
+            this.inspectionSln = this.inspectionSln.UpdateDocument(document);
+            this.loadISolution(this.inspectionSln);
         }
 
         private void ExectueAssembly(object sender, RoutedEventArgs e) {
@@ -195,10 +199,38 @@ namespace SlnViz {
                 Tree = SyntaxTree.ParseText(document.GetText().ToString())
             };
 
-            this.thisSln = this.thisSln.UpdateDocument(document);
+            this.inspectionSln = this.inspectionSln.UpdateDocument(document);
             //this.loadISolution(this.thisSln);
 //            this.execution.Launch(toReturn.Project, new SyntaxTree[] { toReturn.Tree });
 
+        }
+
+        private void MvvmTextEditor_TextChanged_1(object sender, EventArgs e) {
+            var editor = sender as MvvmTextEditor;
+            var syntaxNode = (editor.Tag as SyntaxNode);
+            syntaxNode.TextEditorText = editor.Text;
+        }
+
+        private void ReloadNode_Click(object sender, RoutedEventArgs e) {
+            var btn = sender as Button;
+            var syntaxNode = (btn.Tag as SyntaxNode);
+
+            var node = syntaxNode.Node;
+            var newNode = SyntaxTree.ParseText(syntaxNode.TextEditorText).GetRoot();
+            
+            var documentRootNode = syntaxNode.documentRootNode;
+            var document = syntaxNode.document;
+
+            documentRootNode = documentRootNode.ReplaceNode(node, newNode).NormalizeWhitespace();
+            document = document.UpdateSyntaxRoot(documentRootNode);
+
+            var toReturn = new ProjectUpdated() {
+                Project = document.Project,
+                Tree = SyntaxTree.ParseText(document.GetText().ToString())
+            };
+
+            this.inspectionSln = this.inspectionSln.UpdateDocument(document);
+            this.loadISolution(this.inspectionSln);
         }
     }
 }

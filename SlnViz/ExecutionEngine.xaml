@@ -6,9 +6,20 @@
              mc:Ignorable="d" 
              DataContext="{Binding RelativeSource={RelativeSource Self}}"
              d:DesignHeight="300" d:DesignWidth="300">
+        
     <Grid>
-        <ScrollViewer HorizontalScrollBarVisibility="Disabled">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+            <StackPanel Orientation="Horizontal">
+                <Button Margin="5" Padding="5">Save</Button>
+                <Button Margin="5" Padding="5">Save As</Button>
+                <Button Margin="5" Padding="5">Open</Button>
+            </StackPanel>
+        <ScrollViewer HorizontalScrollBarVisibility="Disabled" Grid.Row="1">
             <StackPanel Name="outputStack" />
         </ScrollViewer>
     </Grid>
+        
 </UserControl>

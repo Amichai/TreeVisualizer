@@ -19,12 +19,15 @@ namespace SlnViz {
             this.Selected = false;
             this.document = doc;
             this.documentRootNode = doc.GetSyntaxRoot() as CompilationUnitSyntax;
+            this.TextEditorText = this.FullText;
         }
+
+        public string TextEditorText { get; set; }
 
         public IDocument document;
         public CompilationUnitSyntax documentRootNode;
 
-        public enum NodeType { CompilationUnit, Method, Property, Namespace, Class, PropertyMethod };
+        public enum NodeType { File, Method, Property, Namespace, Class, PropertyMethod, Other };
         public static NodeType TypeToShow;
 
         public List<string> GetNamespaces() {
@@ -66,6 +69,47 @@ namespace SlnViz {
             }
         }
 
+        public NodeType GetNodeType() {
+            if (this.Node is CompilationUnitSyntax) {
+                return NodeType.File;
+            } else if (this.Node is NamespaceDeclarationSyntax) {
+                return NodeType.Namespace;
+            } else if (this.Node is ClassDeclarationSyntax) {
+                return NodeType.Class;
+            } else if(this.Node is MethodDeclarationSyntax){
+                return NodeType.Method;
+            } else if(this.Node is PropertyDeclarationSyntax){
+                return NodeType.Property;
+            }
+            return NodeType.Other;
+        }
+
+        public int CountSelfAndChildren(NodeType type, out int lineCount) {
+            var count = 0;
+            lineCount = 0;
+            if (this.GetNodeType() == type) {
+                count++;
+                lineCount = this.Node.GetText().Lines.Count();
+            }
+            foreach (var c in this.Children) {
+                int subCount;
+                count += c.CountSelfAndChildren(type, out subCount);
+                lineCount += subCount;
+            }
+            return count;
+        }
+
+        public int CountSelfAndChildren(NodeType type) {
+            var count = 0;
+            if (this.GetNodeType() == type) {
+                count++;
+            }
+            foreach (var c in this.Children) {
+                count += c.CountSelfAndChildren(type);
+            }
+            return count;
+        }
+
         private NodeType ChildrenType {
             get {
                 if (this.Node is CompilationUnitSyntax) {
@@ -82,7 +126,7 @@ namespace SlnViz {
         public List<SyntaxNode> Children {
             get {
                 switch (this.ChildrenType) {
-                    case NodeType.CompilationUnit:
+                    case NodeType.File:
                         return this.Node.DescendantNodes().OfType<CompilationUnitSyntax>().Select(i => new SyntaxNode(i, document)).ToList();
                     case NodeType.Class:
                         return this.Node.DescendantNodes().OfType<ClassDeclarationSyntax>().Select(i => new SyntaxNode(i, document)).ToList();
