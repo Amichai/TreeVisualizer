@@ -110,6 +110,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="MethodInfoExtensions.cs" />
     <Compile Include="Notepad.xaml.cs">
       <DependentUpon>Notepad.xaml</DependentUpon>
     </Compile>
@@ -131,6 +132,7 @@
       <DependentUpon>StatsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="SyntaxNode.cs" />
+    <Compile Include="Util.cs" />
     <Page Include="ExecutionEngine.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

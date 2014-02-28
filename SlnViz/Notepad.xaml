@@ -9,7 +9,7 @@
     <Grid>
         <tr:MvvmTextEditor ShowLineNumbers="True" 
                            Name="editor"
-                           HorizontalScrollBarVisibility="Hidden" VerticalScrollBarVisibility="Hidden" PreviewKeyDown="MvvmTextEditor_PreviewKeyDown_1"
+                           HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" PreviewKeyDown="MvvmTextEditor_PreviewKeyDown_1"
             ></tr:MvvmTextEditor>
     </Grid>
 </UserControl>

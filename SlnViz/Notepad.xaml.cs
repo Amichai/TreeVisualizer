@@ -81,6 +81,17 @@ namespace SlnViz {
             return this.editor.Text[idx] == '\n';
         }
 
+        private string handleException(string exceptionText, string input, int lineNumber) {
+            ///Try to get type information from the object
+            bool ex;
+            var result = this.engine.AppendCSharp("typeof(" + input + ")", lineNumber, out ex);
+            if (!ex) {
+                return (result as Type).TypeInfo();
+            } else {
+                return exceptionText;
+            }
+        }
+
         private void MvvmTextEditor_PreviewKeyDown_1(object sender, KeyEventArgs e) {
             var key = e.Key;
             string toAppend;
@@ -90,10 +101,14 @@ namespace SlnViz {
                     string toExecute;
                     int insertionIdx;
                     if (this.exectuablePosition(out toExecute, out lineNumber, out insertionIdx)) {
-                        var result = this.engine.AppendCSharp(toExecute, lineNumber);
+                        bool exceptionThrown;
+                        var result = this.engine.AppendCSharp(toExecute, lineNumber, out exceptionThrown).ToString();
                         this.pastLinesCache.Add(toExecute);
-                        toAppend = "\n" + result.ToString() + "\n";
-                        //if(result )
+                        if (exceptionThrown) {
+                            toAppend = "\n" + handleException(result, toExecute, lineNumber);
+                        } else {
+                            toAppend = "\n" + result;
+                        }
                         appendToEditor(toAppend, insertionIdx);
                     }
                     break;
@@ -138,17 +153,18 @@ namespace SlnViz {
                 }
 
                 if (i == allLines.Count() - 1) {
-                    adjustedText.Append(toAppend);
+                    adjustedText.Append(toAppend.Trim('\r'));
                 } else {
-                    adjustedText.AppendLine(toAppend);
+                    adjustedText.AppendLine(toAppend.Trim('\r'));
                 }
             }
             var asString = adjustedText.ToString();
+            
             setText(asString);
         }
 
         private void setText(string text) {
-            var c = this.caretPosition + 3;
+            var c = this.caretPosition + 4;
             this.editor.Text = text;
             this.editor.CaretOffset = (int)Math.Min(c, text.Length);
         }

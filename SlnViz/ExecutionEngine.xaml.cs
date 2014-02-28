@@ -194,7 +194,8 @@ namespace SlnViz {
             }
         }
 
-        public object AppendCSharp(string inputText, int lineNumber) {
+        public object AppendCSharp(string inputText, int lineNumber, out bool exceptionThrown) {
+            exceptionThrown = false;
             if (string.IsNullOrWhiteSpace(inputText)) {
                 return "";
             }
@@ -212,6 +213,7 @@ namespace SlnViz {
                 }
                 return result;
             } catch (Exception ex) {
+                exceptionThrown = true;
                 return ex.Message + " " + ex.InnerException;
             }
         }
@@ -300,7 +302,8 @@ namespace SlnViz {
                 var sender = ((i.Sender as TextBox).Tag as PageLine);
                 var e = (i.EventArgs as KeyEventArgs);
                 if (e.Key == Key.Enter && (Keyboard.IsKeyDown(Key.RightShift) || Keyboard.IsKeyDown(Key.LeftShift))) {
-                    var result = AppendCSharp(newLine.input.Text, newLine.LineNumber);
+                    bool exceptionThrown;
+                    var result = AppendCSharp(newLine.input.Text, newLine.LineNumber, out exceptionThrown);
                     newLine.SetResult(result);
                     AppendNewLine(new PageLine());
                     e.Handled = true;
