@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SlnViz {
     public class LocStat : List<CodeStat> {
         
-        public LocStat(SyntaxNode.NodeType nodeType, List<SyntaxNode> nodes) {
+        public LocStat(SyntaxNodeWrapper.NodeType nodeType, List<SyntaxNodeWrapper> nodes) {
             int instanceCount = 0;
             double lineCount = 0;
             foreach (var n in nodes) {

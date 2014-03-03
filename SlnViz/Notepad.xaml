@@ -5,9 +5,29 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
             xmlns:tr="clr-namespace:TreeViz;assembly=TreeViz" 
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}"
+             >
     <Grid>
-        <tr:MvvmTextEditor ShowLineNumbers="True" 
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Margin="5" Padding="5" Width="80" Click="Save_Click">Save</Button>
+            <Button Grid.Column="1" Margin="5" Padding="5" Width="80" Click="SaveAs_Click">Save As</Button>
+            <Button Grid.Column="2" Margin="5" Padding="5" Width="80" Click="Open_Click">Open</Button>
+            <Button Grid.Column="3" Margin="5" Padding="5" Width="80" Click="New_Click">New</Button>
+            <TextBlock Grid.Column="4" Margin="5" Padding="5" Text="{Binding Filepath}"></TextBlock>
+        </Grid>
+        <tr:MvvmTextEditor ShowLineNumbers="True" Grid.Row="1"
                            Name="editor"
                            HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" PreviewKeyDown="MvvmTextEditor_PreviewKeyDown_1"
             ></tr:MvvmTextEditor>

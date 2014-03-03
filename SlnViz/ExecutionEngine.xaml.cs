@@ -67,7 +67,7 @@ namespace SlnViz {
             }
         }
 
-        public void Init(ISolution sln, List<SyntaxNode> nodes) {
+        public void Init(ISolution sln, List<SyntaxNodeWrapper> nodes) {
             this.clearAllImports();
             engine = new ScriptEngine();
             foreach (var proj in sln.Projects) {
@@ -88,7 +88,7 @@ namespace SlnViz {
             session = engine.CreateSession();
         }
 
-        public void Init2(string filepath, List<SyntaxNode> nodes) {
+        public void Init2(string filepath, List<SyntaxNodeWrapper> nodes) {
             IWorkspace workspace = Workspace.LoadSolution(filepath);
             ISolution sln = workspace.CurrentSolution;
             engine = new ScriptEngine();
@@ -143,7 +143,7 @@ namespace SlnViz {
             var binPath = System.IO.Path.Combine(new System.IO.FileInfo(proj.FilePath).Directory.FullName, "bin", "debug", string.Format("{0}.exe", assemblyName));
             if (System.IO.File.Exists(binPath)) {
                 Debug.Print("Bin path: " + binPath);
-                addReference(new MetadataFileReference(binPath));
+                AddReference(binPath);
             }
 
             binPath = System.IO.Path.Combine(new System.IO.FileInfo(proj.FilePath).Directory.FullName, "bin", "debug", string.Format("{0}.dll", assemblyName));
@@ -155,6 +155,10 @@ namespace SlnViz {
             foreach (var r in proj.MetadataReferences) {
                 addReference(r);
             }
+        }
+
+        public void AddReference(string binPath) {
+            addReference(new MetadataFileReference(binPath));
         }
 
         private List<string> standardNamespaces = new List<string>() { "System", "System.Linq", "System.Collections", "System.Collections.Generic" };
@@ -458,6 +462,9 @@ namespace SlnViz {
             }
             
         }
-    }
 
+        internal void UpdateSession() {
+            session = engine.CreateSession();
+        }
+    }
 }

@@ -48,7 +48,7 @@ namespace SlnViz {
             }
         }
 
-        public void SetNodes(List<SyntaxNode> nodes, string path) {
+        public void SetNodes(List<SyntaxNodeWrapper> nodes, string path) {
             this.Stats.Clear();
             this.Path = path;
             this.Title = path.Split('\\').Last();
@@ -62,19 +62,19 @@ namespace SlnViz {
             this.Stats.Add(new CodeStat("Lines of code", lineCount));
 
 
-            foreach (var s in new LocStat(SyntaxNode.NodeType.Class, nodes)) {
+            foreach (var s in new LocStat(SyntaxNodeWrapper.NodeType.Class, nodes)) {
                 this.Stats.Add(s);
             }
 
-            foreach (var s in new LocStat(SyntaxNode.NodeType.Property, nodes)) {
+            foreach (var s in new LocStat(SyntaxNodeWrapper.NodeType.Property, nodes)) {
                 this.Stats.Add(s);
             }
 
-            foreach (var s in new LocStat(SyntaxNode.NodeType.File, nodes)) {
+            foreach (var s in new LocStat(SyntaxNodeWrapper.NodeType.File, nodes)) {
                 this.Stats.Add(s);
             }
 
-            foreach (var s in new LocStat(SyntaxNode.NodeType.Method, nodes)) {
+            foreach (var s in new LocStat(SyntaxNodeWrapper.NodeType.Method, nodes)) {
                 this.Stats.Add(s);
             }
 

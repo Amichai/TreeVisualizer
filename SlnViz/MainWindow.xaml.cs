@@ -27,7 +27,7 @@ using TreeViz;
 
 namespace SlnViz {
     /// <summary>
-    /// Interaction logic for MainWindow.xaml
+    /// Interaction logic for MainWindow.xaml   
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged {
         public MainWindow() {
@@ -36,7 +36,7 @@ namespace SlnViz {
             this.Filepath = @"C:\Users\Amichai\Documents\Visual Studio 2012\Projects\ComputationalPhysics\computationalPhysics.sln";
             //this.Filepath = @"C:\Users\Amichai\Documents\Visual Studio 2012\Projects\EquationEditor\EquationEditor.sln";
             //this.Filepath = @"C:\Users\Amichai\Documents\Visual Studio 2012\Projects\SolutionBuilder\SolutionBuilder.sln";
-
+            //this.Filepath = @"C:\Users\Amichai\Documents\Visual Studio 2012\Projects\TreeViz\TreeViz.sln";
             //this.Filepath = @"C:\Users\Amichai\Documents\Projects\S1102 MoMath Exhibits\Robot Swarm\RobotManager\RobotManager.sln";
             this.Imported = new ImportedReferences(this.execution);
             loadSln(this.Filepath);
@@ -63,12 +63,12 @@ namespace SlnViz {
             ISolution sln = workspace.CurrentSolution;
             this.inspectionSln = sln;
 
-            List<SyntaxNode> nodes = loadISolution(sln);
+            List<SyntaxNodeWrapper> nodes = loadISolution(sln);
             this.stats.SetNodes(nodes, path);
         }
 
-        private List<SyntaxNode> loadISolution(ISolution sln) {
-            List<SyntaxNode> nodes = new List<SyntaxNode>();
+        private List<SyntaxNodeWrapper> loadISolution(ISolution sln) {
+            List<SyntaxNodeWrapper> nodes = new List<SyntaxNodeWrapper>();
 
             //SyntaxNode.ProjectUpdated.Subscribe(i => {
             //    //this.execution.AddProject(i);
@@ -79,7 +79,7 @@ namespace SlnViz {
             foreach (var p in sln.Projects) {
                 var selectedNodes = p.Documents.Select(i => {
                     var root = i.GetSyntaxTree().GetRoot();
-                    var sn = new SyntaxNode(root, i);
+                    var sn = new SyntaxNodeWrapper(root, i);
                     return sn;
                 });
                 nodes.AddRange(selectedNodes);
@@ -149,7 +149,7 @@ namespace SlnViz {
         }
 
         private void GetTrivia_Click(object sender, RoutedEventArgs e) {
-            var node = ((sender as Button).Tag as SyntaxNode).Node;
+            var node = ((sender as Button).Tag as SyntaxNodeWrapper).Node;
             try {
                 var trivia = node.GetLeadingTrivia().Single(t => t.Kind == (int)SyntaxKind.DocumentationCommentTrivia);
                 var xml = trivia.GetStructure();
@@ -168,7 +168,7 @@ namespace SlnViz {
             m = m.AddAccessorListAccessors(
             Syntax.AccessorDeclaration(SyntaxKind.GetAccessorDeclaration).WithSemicolonToken(Syntax.Token(SyntaxKind.SemicolonToken)),
             Syntax.AccessorDeclaration(SyntaxKind.SetAccessorDeclaration).WithSemicolonToken(Syntax.Token(SyntaxKind.SemicolonToken)));
-            var syntaxNode = ((sender as Button).Tag as SyntaxNode);
+            var syntaxNode = ((sender as Button).Tag as SyntaxNodeWrapper);
 
             var node = syntaxNode.Node;
             var newNode = (node as ClassDeclarationSyntax).AddMembers(m);
@@ -188,7 +188,7 @@ namespace SlnViz {
         }
 
         private void ExectueAssembly(object sender, RoutedEventArgs e) {
-            var syntaxNode = ((sender as Button).Tag as SyntaxNode);
+            var syntaxNode = ((sender as Button).Tag as SyntaxNodeWrapper);
 
             var node = syntaxNode.Node;
             var documentRootNode = syntaxNode.documentRootNode;
@@ -207,13 +207,13 @@ namespace SlnViz {
 
         private void MvvmTextEditor_TextChanged_1(object sender, EventArgs e) {
             var editor = sender as MvvmTextEditor;
-            var syntaxNode = (editor.Tag as SyntaxNode);
+            var syntaxNode = (editor.Tag as SyntaxNodeWrapper);
             syntaxNode.TextEditorText = editor.Text;
         }
 
         private void ReloadNode_Click(object sender, RoutedEventArgs e) {
             var btn = sender as Button;
-            var syntaxNode = (btn.Tag as SyntaxNode);
+            var syntaxNode = (btn.Tag as SyntaxNodeWrapper);
 
             var node = syntaxNode.Node;
             var newNode = SyntaxTree.ParseText(syntaxNode.TextEditorText).GetRoot();
@@ -231,6 +231,14 @@ namespace SlnViz {
 
             this.inspectionSln = this.inspectionSln.UpdateDocument(document);
             this.loadISolution(this.inspectionSln);
+        }
+
+        private void AddReference_Click(object sender, RoutedEventArgs e) {
+            OpenFileDialog ofd = new OpenFileDialog();
+            ofd.ShowDialog();
+
+            this.execution.AddReference(ofd.FileName);
+            this.execution.UpdateSession();
         }
     }
 }

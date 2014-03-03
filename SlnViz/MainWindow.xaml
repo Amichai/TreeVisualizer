@@ -114,6 +114,8 @@
                                 <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
                                 <ScrollViewer Grid.Column="2" HorizontalScrollBarVisibility="Auto">
                                     <StackPanel >
+                                        <Button Margin="5" Padding="5" HorizontalAlignment="Left"
+                                                Click="AddReference_Click" Width="300">Add</Button>
                                         <TextBlock FontWeight="Bold">Binary References:</TextBlock>
                                         <ItemsControl DataContext="{Binding Imported}" ItemsSource="{Binding Binaries}" ></ItemsControl>
                                     </StackPanel>

@@ -12,9 +12,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace SlnViz {
-    public class SyntaxNode : INotifyPropertyChanged {
+    public class SyntaxNodeWrapper : INotifyPropertyChanged {
         public CommonSyntaxNode Node { get; set; }
-        public SyntaxNode(CommonSyntaxNode n, IDocument doc) {
+        public SyntaxNodeWrapper(CommonSyntaxNode n, IDocument doc) {
             this.Node = n;
             this.Selected = false;
             this.document = doc;
@@ -123,24 +123,24 @@ namespace SlnViz {
             }
         }
 
-        public List<SyntaxNode> Children {
+        public List<SyntaxNodeWrapper> Children {
             get {
                 switch (this.ChildrenType) {
                     case NodeType.File:
-                        return this.Node.DescendantNodes().OfType<CompilationUnitSyntax>().Select(i => new SyntaxNode(i, document)).ToList();
+                        return this.Node.DescendantNodes().OfType<CompilationUnitSyntax>().Select(i => new SyntaxNodeWrapper(i, document)).ToList();
                     case NodeType.Class:
-                        return this.Node.DescendantNodes().OfType<ClassDeclarationSyntax>().Select(i => new SyntaxNode(i, document)).ToList();
+                        return this.Node.DescendantNodes().OfType<ClassDeclarationSyntax>().Select(i => new SyntaxNodeWrapper(i, document)).ToList();
                     case NodeType.Method:
-                        var children = this.Node.DescendantNodes().OfType<MethodDeclarationSyntax>().Select(i => new SyntaxNode(i, document)).ToList();
+                        var children = this.Node.DescendantNodes().OfType<MethodDeclarationSyntax>().Select(i => new SyntaxNodeWrapper(i, document)).ToList();
                         return children;
                     case NodeType.Namespace:
-                        return this.Node.DescendantNodes().OfType<NamespaceDeclarationSyntax>().Select(i => new SyntaxNode(i, document)).ToList();
+                        return this.Node.DescendantNodes().OfType<NamespaceDeclarationSyntax>().Select(i => new SyntaxNodeWrapper(i, document)).ToList();
                     case NodeType.Property:
-                        return this.Node.DescendantNodes().OfType<PropertyDeclarationSyntax>().Select(i => new SyntaxNode(i, document)).ToList();
+                        return this.Node.DescendantNodes().OfType<PropertyDeclarationSyntax>().Select(i => new SyntaxNodeWrapper(i, document)).ToList();
                     case NodeType.PropertyMethod:
-                        var l1 = this.Node.DescendantNodes().OfType<PropertyDeclarationSyntax>().Select(i => new SyntaxNode(i, document)).ToList();
-                        var l2 = this.Node.DescendantNodes().OfType<MethodDeclarationSyntax>().Select(i => new SyntaxNode(i, document));
-                        var l3 = this.Node.DescendantNodes().OfType<ConstructorDeclarationSyntax>().Select(i => new SyntaxNode(i, document));
+                        var l1 = this.Node.DescendantNodes().OfType<PropertyDeclarationSyntax>().Select(i => new SyntaxNodeWrapper(i, document)).ToList();
+                        var l2 = this.Node.DescendantNodes().OfType<MethodDeclarationSyntax>().Select(i => new SyntaxNodeWrapper(i, document));
+                        var l3 = this.Node.DescendantNodes().OfType<ConstructorDeclarationSyntax>().Select(i => new SyntaxNodeWrapper(i, document));
                         l1.AddRange(l2);
                         l1.AddRange(l3);
                         return l1;
