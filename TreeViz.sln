@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlnViz", "SlnViz\SlnViz.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GridSplitter", "..\EquationEditor\GridSplitter\GridSplitter.csproj", "{4B9E3965-90A1-4468-BF94-5972C417FF52}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Session.WEB", "Session.WEB\Session.WEB.csproj", "{0D6007C3-680F-4489-AB20-FF9F35F9C61A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +39,10 @@ Global
 		{4B9E3965-90A1-4468-BF94-5972C417FF52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B9E3965-90A1-4468-BF94-5972C417FF52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4B9E3965-90A1-4468-BF94-5972C417FF52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0D6007C3-680F-4489-AB20-FF9F35F9C61A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0D6007C3-680F-4489-AB20-FF9F35F9C61A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0D6007C3-680F-4489-AB20-FF9F35F9C61A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0D6007C3-680F-4489-AB20-FF9F35F9C61A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

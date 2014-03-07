@@ -128,9 +128,7 @@ namespace SlnViz {
                 }
             } catch {
                 Debug.Print("Failed to reference project: " + proj.Name);
-            }
-            
-
+            }           
         }
 
         private static string getFullPath(string assemblyName) {
