@@ -142,6 +142,14 @@ namespace Session.WEB {
             session = engine.CreateSession();
         }
 
+        public string ExecuteToString(string input) {
+            return session.Execute(input).ToString();
+        }
+
+        public object Execute(string inputText) {
+            return session.Execute(inputText);
+        }
+
         public object AppendCSharp(string inputText, int lineNumber, out bool exceptionThrown) {
             exceptionThrown = false;
             if (string.IsNullOrWhiteSpace(inputText)) {

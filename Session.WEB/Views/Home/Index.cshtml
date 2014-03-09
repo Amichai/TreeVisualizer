@@ -1,40 +1,49 @@
-﻿@{
+﻿@model Tuple<string, string>
+
+@{
     ViewBag.Title = "Home Page";
 }
 
 <style type="text/css" media="screen">
-    #editor { 
-        height:1000px
+    #editor {
+        height: 1000px;
+    }
+
+    #title {
+        font-weight:bold;
+        font-size:25px;
+    }
+
+    #saveButton {
+        vertical-align:top;
     }
 </style>
 
 <div ng-app="root">
     <div ng-controller="homeController" id="home" ng-cloak>
+        <div>
+        </div>
         <div class="row">
             <div class="col-md-1 col"></div>
             <div class="col-md-10 col2">
-                <div id="editor" ng-keypress="keypress($event)">
-using ILNumerics;
-ILMath.rand(5,4)
-
-using MathNet.Numerics.LinearAlgebra.Double;
-var matrixA = DenseMatrix.OfArray(new[,] { { 1.0, 2.0, 3.0 }, { 4.0, 5.0, 6.0 }, { 7.0, 8.0, 9.0 } });
-var matrixB = DenseMatrix.OfArray(new[,] { { 1.0, 3.0, 5.0 }, { 2.0, 4.0, 6.0 }, { 3.0, 5.0, 7.0 } });
-
-matrixA.Transpose() * matrixB
-
-using MathNet.Numerics.Integration;
-Integrate.OnClosedInterval(x => Math.Exp(-x / 5) * (2 + Math.Sin(2 * x)), 0, 100)
-</div>
+                @if (@Model.Item2 != null && @Model.Item2.Length != 0) {
+                    <div>
+                        <span id="title">@Model.Item2</span>
+                        <button type="button" class="btn btn-md" id="saveButton" ng-click="savePresentation()">Save</button>
+                    </div>
+                }
+                <div id="editor" ng-keypress="keypress($event)">@Model.Item1</div>
             </div>
             <div class="col-md-1 col"></div>
         </div>
-    </div> 
+    </div>
 </div>
 
 @section scripts {
     <script src="~/Scripts/angularcontrollers/homeController.js"></script>
     <script src="~/Scripts/ace/src-min-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script src="~/Scripts/ace/src-min-noconflict/ext-language_tools.js" type="text/javascript" charset="utf-8"></script>
+
     <script>
         
 </script>
