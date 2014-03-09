@@ -1,0 +1,40 @@
+﻿@{
+    ViewBag.Title = "References";
+}
+
+
+<div ng-app="root">
+    <div ng-controller="referencesController" ng-cloak>
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-4">
+                <h3>Namespaces:</h3>
+            </div>
+            <div class="col-md-4">
+                <h3>References:</h3>
+            </div>
+            <div class="col-md-2 col"></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-4">
+                <div ng-repeat="r in namespaces">
+                    <div>{{r}}</div>
+                </div>
+
+                <input type="text" ng-model="newNamespace" />
+                <button type="button" class="btn btn-md" ng-click="importNamespace()">Add</button>
+            </div>
+            <div class="col-md-4">
+                <div ng-repeat="r in references">
+                    <div>{{r}}</div>
+                </div>
+            </div>
+            <div class="col-md-2 col"></div>
+        </div>
+    </div>
+</div>
+@section scripts {
+    <script src="~/Scripts/angularcontrollers/referencesController.js"></script>
+}

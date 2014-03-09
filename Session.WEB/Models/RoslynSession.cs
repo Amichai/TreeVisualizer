@@ -9,6 +9,7 @@ using Roslyn.Compilers.CSharp;
 using System.IO;
 using System.Diagnostics;
 using Roslyn.Compilers;
+using System.Net;
 
 
 namespace Session.WEB {
@@ -17,18 +18,21 @@ namespace Session.WEB {
         private ScriptEngine engine;
 
         public RoslynSession() {
+            this.ImportedNamespaces = new List<string>();
+            this.ImportedRefs = new List<string>();
             var path = @"C:\Users\Amichai\Documents\Visual Studio 2012\Projects\ComputationalPhysics\computationalPhysics.sln";
             IWorkspace workspace = Workspace.LoadSolution(path);
             ISolution sln = workspace.CurrentSolution;
             this.Init(sln);
+            this.session.AddReference(typeof(WebClient).Assembly.Location);
         }
 
-        List<string> importedNamespaces = new List<string>();
-        List<string> importedRefs = new List<string>();
+        public List<string> ImportedNamespaces { get; set; }
+        public List<string> ImportedRefs { get; set; }
 
         private void clearAllImports() {
-            this.importedNamespaces.Clear();
-            this.importedRefs.Clear();
+            this.ImportedNamespaces.Clear();
+            this.ImportedRefs.Clear();
         }
         private static string getFullPath(string assemblyName) {
             var fullAssemblyName = System.IO.Path.Combine(Directory.GetCurrentDirectory(), assemblyName);
@@ -88,19 +92,19 @@ namespace Session.WEB {
 
         public void ImportNamespace(string space) {
             space = space.TrimEnd();
-            if (!this.importedNamespaces.Contains(space)) {
+            if (!this.ImportedNamespaces.Contains(space)) {
                 engine.ImportNamespace(space);
-                importedNamespaces.Add(space);
+                ImportedNamespaces.Add(space);
                 Debug.Print("space: " + space);
             }
         }
 
         private void addReference(MetadataReference r) {
             string refName = r.Display.Split('\\').Last();
-            if (!importedRefs.Contains(refName)) {
+            if (!ImportedRefs.Contains(refName)) {
                 engine.AddReference(r);
                 Debug.Print("Ref: " + r.Display);
-                importedRefs.Add(refName);
+                ImportedRefs.Add(refName);
             }
         }
         public void AddReference(string binPath) {

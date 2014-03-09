@@ -51,7 +51,7 @@
                     d = d.substring(1, d.length - 1);
                 }
                 var lines = d.split('\\r\\n');
-                //lines = Enumerable.From(lines).SelectMany(function (i) { return d.split('\\n') }).ToArray();
+                lines = Enumerable.From(lines).SelectMany(function (i) { return i   .split('\\n') }).ToArray();
                 for (var i = 0; i < lines.length; i++) {
                     $scope.editor.insert(lines[i] + "\n");
                 }

@@ -18,7 +18,7 @@ namespace Session.WEB.Controllers.ApiControllers {
             return "value";
         }
 
-        private static RoslynSession session = new RoslynSession();
+        public static RoslynSession session = new RoslynSession();
 
         [HttpPost]
         public bool Save(string type) {
@@ -89,7 +89,7 @@ namespace Session.WEB.Controllers.ApiControllers {
             if (custom != null) {
                 return custom;
             }
-
+            
             if (result is string) {
                 return result as string;
             } else if (result is IEnumerable) {
