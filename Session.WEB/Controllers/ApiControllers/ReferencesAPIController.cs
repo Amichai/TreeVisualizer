@@ -18,12 +18,14 @@ namespace Session.WEB.Controllers.ApiControllers
         [HttpGet]
         public List<string> GetNamespaces() {
             var session = HomeAPIController.session;
-            return session.ImportedNamespaces;
+            return session.GetImportedNamespaces();
         }
 
         [HttpPost]
-        public void ImportNamespace(string toImport) {
-
+        public List<string> ImportNamespace(string toImport) {
+            var session = HomeAPIController.session;
+            session.ImportNamespace(toImport);
+            return this.GetNamespaces();
         }
     }
 }

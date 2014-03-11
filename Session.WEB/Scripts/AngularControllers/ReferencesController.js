@@ -9,8 +9,9 @@
     });
 
     $scope.importNamespace = function(){
-        $http.post(baseUrl + 'api/referencesAPI/importnamespace?toImport=' + $scope.newNamespace).success(function () {
-            debugger;
+        $http.post(baseUrl + 'api/referencesAPI/importnamespace?toImport=' + $scope.newNamespace).success(function (data) {
+            $scope.namespaces = data;
+            $scope.newNamespace = "";
         });
     }
 }]);

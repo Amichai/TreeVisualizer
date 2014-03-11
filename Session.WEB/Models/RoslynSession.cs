@@ -18,7 +18,7 @@ namespace Session.WEB {
         private ScriptEngine engine;
 
         public RoslynSession() {
-            this.ImportedNamespaces = new List<string>();
+            this.importedNamespaces = new List<string>();
             this.ImportedRefs = new List<string>();
             var path = @"C:\Users\Amichai\Documents\Visual Studio 2012\Projects\ComputationalPhysics\computationalPhysics.sln";
             IWorkspace workspace = Workspace.LoadSolution(path);
@@ -27,11 +27,15 @@ namespace Session.WEB {
             this.session.AddReference(typeof(WebClient).Assembly.Location);
         }
 
-        public List<string> ImportedNamespaces { get; set; }
+        public List<string> GetImportedNamespaces() {
+            return this.importedNamespaces;
+        }
+
+        private List<string> importedNamespaces { get; set; }
         public List<string> ImportedRefs { get; set; }
 
         private void clearAllImports() {
-            this.ImportedNamespaces.Clear();
+            this.importedNamespaces.Clear();
             this.ImportedRefs.Clear();
         }
         private static string getFullPath(string assemblyName) {
@@ -92,10 +96,11 @@ namespace Session.WEB {
 
         public void ImportNamespace(string space) {
             space = space.TrimEnd();
-            if (!this.ImportedNamespaces.Contains(space)) {
+            if (!this.importedNamespaces.Contains(space)) {
                 engine.ImportNamespace(space);
-                ImportedNamespaces.Add(space);
+                importedNamespaces.Add(space);
                 Debug.Print("space: " + space);
+                session = engine.CreateSession();
             }
         }
 
@@ -136,7 +141,6 @@ namespace Session.WEB {
             this.clearAllImports();
             engine = new ScriptEngine();
             foreach (var proj in sln.Projects) {
-
                 AddProject(proj);
             }
 
