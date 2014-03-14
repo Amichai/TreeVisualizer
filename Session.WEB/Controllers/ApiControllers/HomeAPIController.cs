@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Web.Http;
 using Session.WEB.Models;
 using System.Collections;
+using System.Web;
 
 namespace Session.WEB.Controllers.ApiControllers {
     public class HomeAPIController : ApiController {
@@ -39,15 +40,28 @@ namespace Session.WEB.Controllers.ApiControllers {
         }
 
         [HttpPost]
+        public bool ResetSession() {
+            try {
+                session = new RoslynSession();
+                return true;
+            } catch (Exception ex) {
+                return false;
+            }
+        }
+
+        [HttpPost]
         public object Execute(int lineNumber) {
             var toExecute = postBody();
             bool exceptionThrown;
             var result = session.AppendCSharp(toExecute, lineNumber, out exceptionThrown);
+            var resultString = "";
             if (exceptionThrown) {
-                return handleException(result.ToString(), toExecute, lineNumber);
+                resultString = handleException(result.ToString(), toExecute, lineNumber);
+            } else {
+                int recursionCounter = 0;
+                resultString = displayResult(result, session, ref recursionCounter);
             }
-            int recursionCounter = 0;
-            return displayResult(result, session, ref recursionCounter);
+            return resultString;
         }
 
         private string postBody() {
@@ -91,16 +105,20 @@ namespace Session.WEB.Controllers.ApiControllers {
             }
             
             if (result is string) {
-                return result as string;
+                return  encodeString(result as string);
             } else if (result is IEnumerable) {
                 string enumerableResult = "";
                 foreach (var i in (result as IEnumerable)) {
                     enumerableResult += displayResult(i, session, ref recursionCounter, db) + ",";
                 }
                 return enumerableResult;
-            }
+            } 
             var asString = result.ToString();
-            return asString;
+            return encodeString(asString);
+        }
+
+        private string encodeString(string s) {
+            return s.Replace("\n", "<br />").Replace("\r", "");
         }
 
         private string customResult(RoslynSession session,  ref int recursionCounter, Data.CodeBaseEntities db, string typeStringFull) {

@@ -30,6 +30,24 @@
         });
     }
 
+    $scope.resetSession = function () {
+        $http.post(baseUrl + 'api/homeapi/resetSession').success(function (result) {
+            if (result) {
+            } else {
+            }
+        });
+    }
+
+    function htmlEncode(value) {
+        //create a in-memory div, set it's inner text(which jQuery automatically encodes)
+        //then grab the encoded contents back out.  The div never exists on the page.
+        return $('<div/>').text(value).html();
+    }
+
+    function htmlDecode(value) {
+        return $('<div/>').html(value).text();
+    }
+
     $scope.keypress = function (ev, editor) {
         if (ev.which == 13) {
             //Get highlighted text to post
@@ -47,18 +65,26 @@
                 if (d == '""') {
                     return;
                 }
+
                 if (d[0] == '"' && d[d.length - 1] == '"') {
                     d = d.substring(1, d.length - 1);
                 }
-                var lines = d.split('\\r\\n');
-                lines = Enumerable.From(lines).SelectMany(function (i) { return i   .split('\\n') }).ToArray();
-                for (var i = 0; i < lines.length; i++) {
-                    $scope.editor.insert(lines[i] + "\n");
-                }
+                append("<br /><b>Line number " + (lineNumber + 1) + ":</b><br />");
+                append(d);
+                //var lines = d.split('\\r\\n');
+                //lines = Enumerable.From(lines).SelectMany(function (i) { return i.split('\\n') }).ToArray();
+                //for (var i = 0; i < lines.length; i++) {
+                //    $scope.editor.insert(lines[i] + "\n");
+                //    append(htmlEncode(lines[i]) + "<br />");
+                //}
 
 
             });
             ///Post to execute
+        }
+
+        function append(data) {
+            $('#resultArea').append(data);
         }
     }
 

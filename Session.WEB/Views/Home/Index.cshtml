@@ -10,12 +10,32 @@
     }
 
     #title {
-        font-weight:bold;
-        font-size:25px;
+        font-weight: bold;
+        font-size: 25px;
+    }
+
+    .resizable {
+        resize: vertical;
+        overflow: auto;
     }
 
     #saveButton {
-        vertical-align:top;
+        vertical-align: top;
+    }
+
+    .outline {
+        border-radius:10px;
+        border-color:black;
+        border-width:1px;
+        border-style:solid;
+    }
+    /*#col1 {
+        outline:black solid 1px;
+    }*/
+
+    #resultArea {
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+        white-space:pre;
     }
 </style>
 
@@ -24,17 +44,21 @@
         <div>
         </div>
         <div class="row">
-            <div class="col-md-1 col"></div>
-            <div class="col-md-10 col2">
-                @if (@Model.Item2 != null && @Model.Item2.Length != 0) {
-                    <div>
-                        <span id="title">@Model.Item2</span>
-                        <button type="button" class="btn btn-md" id="saveButton" ng-click="savePresentation()">Save</button>
-                    </div>
-                }
-                <div id="editor" ng-keypress="keypress($event)">@Model.Item1</div>
+            <div class="col-md-1"></div>
+            <div class="col-md-5">
+
+                <div id="editor" class="outline" ng-keypress="keypress($event)">@Model.Item1</div>
             </div>
-            <div class="col-md-1 col"></div>
+            @if (Model.Item2 != null && Model.Item2.Length != 0) {
+                <div>
+                    <span id="title">@Model.Item2</span>
+                    <button type="button" class="btn btn-md" id="saveButton" ng-click="savePresentation()">Save</button>
+                </div>
+            } else { 
+                <button type="button" class="btn btn-md" id="resetButton" ng-click="resetSession()">Reset</button>
+            }
+            <div class="col-md-5" id="resultArea"></div>
+            <div class="col-md-1"></div>
         </div>
     </div>
 </div>
