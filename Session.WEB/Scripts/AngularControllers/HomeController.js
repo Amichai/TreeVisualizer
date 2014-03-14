@@ -58,29 +58,29 @@
             if (selected === undefined || selected.length == 0) {
                 selected = $scope.editor.getValue().split('\n')[lineNumber];
             }
-            $http.post(baseUrl + 'api/homeapi/execute?lineNumber=' + lineNumber, selected).success(function (d) {
-                //$scope.editor.insert(d.substring(1, d.length - 2));
-                //$scope.editor.insert(new String(d));
-                //$scope.editor.insert(new String(d.substring(1, d.length - 2)));
-                if (d == '""') {
+            
+            $http.post(baseUrl + 'api/homeapi/execute?lineNumber=' + lineNumber, selected).success(function (result) {
+                //var j = eval(result["javascript"]);
+                //$('#resultArea').html(j[0]);
+                //return;
+                d = result["htmlresult"];
+
+
+                if (d == '""' || d == '') {
                     return;
                 }
 
                 if (d[0] == '"' && d[d.length - 1] == '"') {
                     d = d.substring(1, d.length - 1);
                 }
+                if (result["exceptionThrown"]) {
+                    $scope.editor.insert(d);
+                    return;
+                }
+
                 append("<br /><b>Line number " + (lineNumber + 1) + ":</b><br />");
                 append(d);
-                //var lines = d.split('\\r\\n');
-                //lines = Enumerable.From(lines).SelectMany(function (i) { return i.split('\\n') }).ToArray();
-                //for (var i = 0; i < lines.length; i++) {
-                //    $scope.editor.insert(lines[i] + "\n");
-                //    append(htmlEncode(lines[i]) + "<br />");
-                //}
-
-
             });
-            ///Post to execute
         }
 
         function append(data) {
