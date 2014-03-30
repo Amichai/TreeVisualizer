@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GridSplitter", "..\Equation
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Session.WEB", "Session.WEB\Session.WEB.csproj", "{0D6007C3-680F-4489-AB20-FF9F35F9C61A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SessionHelper", "SessionHelper\SessionHelper.csproj", "{D467A622-5130-4918-84F1-97510793EBBE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -43,6 +45,10 @@ Global
 		{0D6007C3-680F-4489-AB20-FF9F35F9C61A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0D6007C3-680F-4489-AB20-FF9F35F9C61A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0D6007C3-680F-4489-AB20-FF9F35F9C61A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D467A622-5130-4918-84F1-97510793EBBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D467A622-5130-4918-84F1-97510793EBBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D467A622-5130-4918-84F1-97510793EBBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D467A622-5130-4918-84F1-97510793EBBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -38,6 +38,10 @@
         });
     }
 
+    $scope.clearResults = function () {
+        $('#resultArea').html('');
+    };
+
     function htmlEncode(value) {
         //create a in-memory div, set it's inner text(which jQuery automatically encodes)
         //then grab the encoded contents back out.  The div never exists on the page.
@@ -54,17 +58,20 @@
             var selected = $scope.editor.getCopyText();
             //cancelBubble(ev);
             $scope.editor.insert(selected);
-            var lineNumber = $scope.editor.getCursorPosition().row;
+
+            var cursorPos = $scope.editor.getCursorPosition();
+            var lineNumber = cursorPos.row;
             if (selected === undefined || selected.length == 0) {
                 selected = $scope.editor.getValue().split('\n')[lineNumber];
             }
-            
+            if (selected == "" && cursorPos.column != selected.length) {
+                return;
+            }
             $http.post(baseUrl + 'api/homeapi/execute?lineNumber=' + lineNumber, selected).success(function (result) {
                 //var j = eval(result["javascript"]);
                 //$('#resultArea').html(j[0]);
                 //return;
                 d = result["htmlresult"];
-
 
                 if (d == '""' || d == '') {
                     return;
@@ -73,11 +80,10 @@
                 if (d[0] == '"' && d[d.length - 1] == '"') {
                     d = d.substring(1, d.length - 1);
                 }
-                if (result["exceptionThrown"]) {
+                if (result["textResult"]) {
                     $scope.editor.insert(d);
                     return;
                 }
-
                 append("<br /><b>Line number " + (lineNumber + 1) + ":</b><br />");
                 append(d);
             });

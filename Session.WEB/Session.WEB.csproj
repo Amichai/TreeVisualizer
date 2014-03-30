@@ -80,6 +80,9 @@
     <Reference Include="Roslyn.Utilities">
       <HintPath>..\packages\Roslyn.Services.Common.1.2.20906.2\lib\net45\Roslyn.Utilities.dll</HintPath>
     </Reference>
+    <Reference Include="SessionNetLib">
+      <HintPath>lib\SessionNetLib.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.Entity" />
@@ -318,6 +321,7 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="LICENSE.txt" />
+    <Content Include="MyData\regressionData - 12-26-13.txt" />
     <Content Include="Scripts\ace\src-min-noconflict\ace.js" />
     <Content Include="Scripts\ace\src-min-noconflict\ext-chromevox.js" />
     <Content Include="Scripts\ace\src-min-noconflict\ext-elastic_tabstops_lite.js" />
@@ -978,6 +982,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SessionHelper\SessionHelper.csproj">
+      <Project>{d467a622-5130-4918-84f1-97510793ebbe}</Project>
+      <Name>SessionHelper</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

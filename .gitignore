@@ -13,3 +13,5 @@ SlnViz/obj
 Session.WEB/bin/
 Session.WEB/obj/
 Session.WEB/Web.config
+SessionHelper/obj/
+SessionHelper/bin/
